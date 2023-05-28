@@ -22,6 +22,8 @@ The all project was coded under PEP-8 (https://peps.python.org/pep-0008/) and fl
 
 ## Screenshot 
 
-![alt text]()
+![alt text](https://github.com/HippolyteGuigon/Feed_Forward_Neural_Network_Implementation/blob/main/ressources/fnn.png)
+
+Image of a vanilla Feed-Forward Neural Network
 
 ## How to use ? 
