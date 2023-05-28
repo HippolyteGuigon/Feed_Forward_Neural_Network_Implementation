@@ -40,7 +40,7 @@ class neuron:
             The ouput value of the neuron
         """
 
-        output_value=torch.matmul(self.weight,input)
+        output_value=torch.matmul(torch.transpose(self.weight,0,1),input)
         output_value+=self.bias
         output_value=self.activation(output_value)
 
