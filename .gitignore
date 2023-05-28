@@ -1,3 +1,8 @@
+#Excluded files
+
+*.txt
+*.ipynb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
