@@ -40,7 +40,6 @@ class neuron:
         """
         
         output_value=torch.transpose(self.weight,0,-1)@input
-        output_value=torch.unsqueeze(output_value,-1)
         output_value+=self.bias
         
         output_value=self.activation(output_value)

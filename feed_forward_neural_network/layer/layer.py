@@ -63,5 +63,5 @@ class layer:
             raise ValueError("Neurons do not all have outputs values\
                              compute them first before calling this function")
         
-        self.all_outputs=np.array([torch.squeeze(neuron.output_value,-1) for neuron in self.layer_neurons])
+        self.all_outputs=torch.tensor([np.array(neuron.output_value.squeeze()) for neuron in self.layer_neurons]).squeeze()
         

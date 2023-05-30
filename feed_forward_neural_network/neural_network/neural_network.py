@@ -17,12 +17,30 @@ class neural_network:
     def __init__(self, input_data: torch.tensor):
         self.input_data=input_data
 
-    def forward(self, layer_1, layer_2)->torch.tensor:
+    def forward(self, layer_1, layer_2)->None:
+        """
+        The goal of this function
+        is to compute the values
+        from one layer to the other
+
+        Arguments:
+            -layer_1: The first layer
+            that will provide input
+            values fed to the next layer
+            -layer_2: The second layer
+            that will compute output
+            values 
+        Returns:
+            -None
+        """
+        
         if layer_1.is_first_layer:
             layer_1_output=self.input_data
+            for neuron in layer_2.layer_neurons:
+                neuron.compute_output_value(layer_1_output)
         else:
-            layer_1_output=layer_1.get_all_outputs()
+            layer_1.get_all_outputs()
+            for neuron in layer_2.layer_neurons:
+                neuron.compute_output_value(layer_1.all_outputs)
         
-        for neuron in layer_2.layer_neurons:
-            neuron.compute_output_value(layer_1_output)
-            print(neuron.output_value)
+        
