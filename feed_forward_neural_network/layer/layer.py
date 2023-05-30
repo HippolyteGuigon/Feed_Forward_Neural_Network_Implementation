@@ -36,11 +36,13 @@ class layer:
                                          for x, y in zip(torch.zeros(
                                             size=(self.hidden_size,self.input_size)),
                                             torch.ones(size=(self.hidden_size,self.input_size)))])
+            self.is_first_layer=True
         else:
-            self.layer_neurons=np.array([neuron(bias=x, weight=y) 
-                                     for x, y in zip(torch.randn(
-                                    size=(self.hidden_size,self.input_size)),
-                                    torch.randn(size=(self.hidden_size,self.input_size)))])
+            self.layer_neurons=np.array([neuron(bias=x, weight=torch.randn(size=(self.input_size,self.hidden_size))) 
+                                     for x in torch.randn(
+                                    size=(self.hidden_size,1))])
+            self.is_first_layer=False
+
         self.biases=np.array([neuron.bias for neuron in self.layer_neurons])
         self.weights=np.array([neuron.weight for neuron in self.layer_neurons])
         
@@ -57,9 +59,9 @@ class layer:
             -None
         """
 
-        if not np.all([hasattr(neuron,output_value) for neuron in self.layer_neurons]):
-            raise ValueError("Neurons do not have outputs values\
+        if not np.all([hasattr(neuron,"output_value") for neuron in self.layer_neurons]):
+            raise ValueError("Neurons do not all have outputs values\
                              compute them first before calling this function")
         
-        self.all_outputs=np.array([neuron.output_value for neuron in self.layer_neurons])
+        self.all_outputs=np.array([torch.squeeze(neuron.output_value,-1) for neuron in self.layer_neurons])
         
