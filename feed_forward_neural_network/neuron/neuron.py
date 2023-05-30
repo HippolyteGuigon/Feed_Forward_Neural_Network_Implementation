@@ -25,7 +25,7 @@ class neuron:
         if activation=="sigmoid":
             self.activation=staticmethod(sigmoid).__func__
         
-    def compute_output_value(self,input:torch.tensor)->torch.tensor:
+    def compute_output_value(self,input:torch.tensor)->None:
         """
         The goal of this function is
         to compute the output value
@@ -36,12 +36,13 @@ class neuron:
             -input: torch.tensor: The
             input values of the neuron
         Returns:
-            -output_value: torch.tensor:
-            The ouput value of the neuron
+            -None
         """
 
-        output_value=torch.matmul(torch.transpose(self.weight,0,1),input)
+        print("1", torch.transpose(self.weight,0,-1))
+        print("2",input)
+        output_value=torch.transpose(self.weight,0,-1)@input
         output_value+=self.bias
         output_value=self.activation(output_value)
 
-        return output_value
+        self.output_value=output_value
