@@ -42,6 +42,25 @@ def sigmoid(x: torch.tensor)->torch.tensor:
     
     return activation_value
 
+def softmax(x: torch.tensor)->torch.tensor:
+    """
+    The goal of this function is
+    to get the activation value
+    of a given tensor with the
+    softmax function
+    
+    Arguments:
+        -x: torch.tensor: The tensor
+        to be activated
+    Returns:
+        -activation_value: torch.tensor:
+        the value of the activation
+    """
+
+    denominator=torch.sum(torch.exp(x)).item()
+    activation_value=torch.tensor([torch.exp(t).item()/denominator for t in x])
+    return activation_value
+
 def tanh(x: torch.tensor)->float:
     pass
 

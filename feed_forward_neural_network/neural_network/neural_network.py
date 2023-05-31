@@ -44,3 +44,17 @@ class neural_network:
                 neuron.compute_output_value(layer_1.all_outputs)
         
         
+    def output(self, layer):
+        """
+        The goal of this function
+        is to get the prediction 
+        of the neural network once
+        its final layer is reached
+        
+        Arguments:
+            -layer: The last layer of
+            the neuron network
+        Returns:
+            -output_value: torch.tensor(int):
+            The predicion of the network
+        """
