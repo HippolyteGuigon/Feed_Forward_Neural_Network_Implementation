@@ -3,8 +3,24 @@ import torch
 def elu(x: torch.tensor)->float:
     pass
 
-def relu(x: torch.tensor)->float:
-    pass
+def ReLU(x: torch.tensor)->float:
+    """
+    The goal of this function is
+    to get the activation value
+    of a given tensor with the
+    ReLU function
+    
+    Arguments:
+        -x: torch.tensor: The tensor
+        to be activated
+    Returns:
+        -activation_value: torch.tensor:
+        the value of the activation
+    """
+    
+    activation_value=torch.max(0,x)
+
+    return activation_value
 
 def sigmoid(x: torch.tensor)->torch.tensor:
     """
