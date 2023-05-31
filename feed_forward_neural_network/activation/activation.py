@@ -102,3 +102,24 @@ def tanh(x: torch.tensor)->torch.tensor:
 
     activation_value=(torch.exp(x)-torch.exp(-x))/(torch.exp(x)+torch.exp(-x))
     return activation_value
+
+def swish(x: torch.tensor, beta: float)->torch.tensor:
+    """
+    The goal of this function is
+    to get the activation value
+    of a given tensor with the
+    swish function
+    
+    Arguments:
+        -x: torch.tensor: The tensor
+        to be activated
+        -beta: float: The ponderated
+        argument for the swish function
+    Returns:
+        -activation_value: torch.tensor:
+        the value of the activation
+    """
+            
+    activation_value=x*torch.exp(beta*x)/(1+torch.exp(beta*x))
+
+    return activation_value
