@@ -1,2 +1,3 @@
+numpy==1.23.5
 setuptools==67.6.1
 torch==2.0.0
