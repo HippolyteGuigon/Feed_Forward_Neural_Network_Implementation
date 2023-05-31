@@ -1,5 +1,5 @@
 import torch
-from feed_forward_neural_network.activation.activation import sigmoid
+from feed_forward_neural_network.activation.activation import sigmoid, ReLU
 
 class neuron:
     """
@@ -18,13 +18,14 @@ class neuron:
         -None
     """
     
-    def __init__(self, bias: torch.tensor, weight:torch.tensor, activation: str ="sigmoid"):
+    def __init__(self, bias: torch.tensor, weight:torch.tensor, activation: str ="ReLU"):
         self.bias=bias
         self.weight=weight
         
-        if activation=="sigmoid":
+        if activation=="ReLU":
+            self.activation=staticmethod(ReLU).__func__
+        elif activation=="sigmoid":
             self.activation=staticmethod(sigmoid).__func__
-        
     def compute_output_value(self,input:torch.tensor)->None:
         """
         The goal of this function is
@@ -41,6 +42,5 @@ class neuron:
         
         output_value=torch.transpose(self.weight,0,-1)@input
         output_value+=self.bias
-        
         output_value=self.activation(output_value)
         self.output_value=output_value

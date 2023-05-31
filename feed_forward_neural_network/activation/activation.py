@@ -18,7 +18,8 @@ def ReLU(x: torch.tensor)->float:
         the value of the activation
     """
     
-    activation_value=torch.max(0,x)
+    x=torch.cat((torch.tensor([0]),x))
+    activation_value=torch.max(x)
 
     return activation_value
 
