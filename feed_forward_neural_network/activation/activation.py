@@ -1,7 +1,31 @@
 import torch
 
-def elu(x: torch.tensor)->float:
-    pass
+def elu(x: torch.tensor, alpha: float)->float:
+    """
+    The goal of this function is
+    to get the activation value
+    of a given tensor with the
+    elu function
+    
+    Arguments:
+        -x: torch.tensor: The tensor
+        to be activated
+        -alpha: float: The strictly
+        positive alpha value of the
+        elu function
+    Returns:
+        -activation_value: torch.tensor:
+        the value of the activation
+    """
+    
+    assert alpha>0, "The alpha value must\
+        be strictly positive"
+    
+    if x<=0:
+        activation_value=alpha*(torch.exp(x)-1)
+    else:
+         activation_value=x
+    return activation_value
 
 def ReLU(x: torch.tensor)->float:
     """
@@ -61,6 +85,20 @@ def softmax(x: torch.tensor)->torch.tensor:
     activation_value=torch.tensor([torch.exp(t).item()/denominator for t in x])
     return activation_value
 
-def tanh(x: torch.tensor)->float:
-    pass
+def tanh(x: torch.tensor)->torch.tensor:
+    """
+    The goal of this function is
+    to get the activation value
+    of a given tensor with the
+    tanh function
+    
+    Arguments:
+        -x: torch.tensor: The tensor
+        to be activated
+    Returns:
+        -activation_value: torch.tensor:
+        the value of the activation
+    """
 
+    activation_value=(torch.exp(x)-torch.exp(-x))/(torch.exp(x)+torch.exp(-x))
+    return activation_value
