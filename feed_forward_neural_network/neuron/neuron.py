@@ -18,7 +18,7 @@ class neuron:
         -None
     """
     
-    def __init__(self, bias: torch.tensor, weight:torch.tensor, activation: str ="ReLU"):
+    def __init__(self, bias: torch.tensor, weight:torch.tensor, activation: str ="sigmoid"):
         self.bias=bias
         self.weight=weight
         

@@ -43,8 +43,12 @@ class layer:
                                     size=(self.hidden_size,1))])
             self.is_first_layer=False
 
-        self.biases=np.array([neuron.bias for neuron in self.layer_neurons])
-        self.weights=np.array([neuron.weight for neuron in self.layer_neurons])
+        if self.hidden_size==1:
+            self.biases=self.layer_neurons[0].bias
+            self.weights=self.layer_neurons[0].weight
+        else:
+            self.biases=np.array([neuron.bias for neuron in self.layer_neurons])
+            self.weights=np.array([neuron.weight for neuron in self.layer_neurons])
         
     def get_all_outputs(self)->None:
         """
