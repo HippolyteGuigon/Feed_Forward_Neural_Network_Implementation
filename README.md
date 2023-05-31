@@ -7,8 +7,8 @@ For the moment, the one-path computation is ready for a single-batch compute. Th
 
 * The availability for the Feed-Forward Neural network to support multiple data in a single batch
 * To code the backpropagation process in order to optimize the network
-* To compute options that will make it possible for the user avoiding overfitting (L1/L2 reegularization, dropout etc...)
-* To have software-engineering friendly actions such as unittesting
+* To compute options that will make it possible for the user avoiding overfitting (L1/L2 regularization, dropout etc...)
+* To have software-engineering friendly actions such as unittesting/ CI-CD
 
 Throughout its construction, if you see any improvements that could be made in the code, do not hesitate to reach out at 
 Hippolyte.guigon@hec.edu. I will b delighted to get some insights !
