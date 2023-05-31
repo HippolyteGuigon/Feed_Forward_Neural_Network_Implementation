@@ -1,5 +1,6 @@
 import torch
 from feed_forward_neural_network.layer.layer import layer
+from feed_forward_neural_network.activation.activation import softmax
 
 class neural_network:
     """
@@ -44,7 +45,7 @@ class neural_network:
                 neuron.compute_output_value(layer_1.all_outputs)
         
         
-    def output(self, layer):
+    def output(self, layer)->torch.tensor:
         """
         The goal of this function
         is to get the prediction 
@@ -55,6 +56,10 @@ class neural_network:
             -layer: The last layer of
             the neuron network
         Returns:
-            -output_value: torch.tensor(int):
+            -output_value: torch.tensor:
             The predicion of the network
         """
+
+        layer.get_all_outputs()
+        final_scores=softmax(layer.all_outputs)
+        return torch.argmax(final_scores)
