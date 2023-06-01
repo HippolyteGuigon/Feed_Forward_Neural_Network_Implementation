@@ -123,3 +123,6 @@ def swish(x: torch.tensor, beta: float)->torch.tensor:
     activation_value=x*torch.exp(beta*x)/(1+torch.exp(beta*x))
 
     return activation_value
+
+def identity(x: torch.tensor)->torch.tensor:
+    return x

@@ -1,5 +1,6 @@
 import torch
-from feed_forward_neural_network.activation.activation import sigmoid, ReLU
+from feed_forward_neural_network.activation.activation import sigmoid, \
+    ReLU, elu, swish, softmax, tanh, identity
 
 class neuron:
     """
@@ -22,10 +23,15 @@ class neuron:
         self.bias=bias
         self.weight=weight
         
-        if activation=="ReLU":
-            self.activation=staticmethod(ReLU).__func__
-        elif activation=="sigmoid":
-            self.activation=staticmethod(sigmoid).__func__
+        activation_dict={"ReLU":ReLU,"sigmoid":sigmoid, "elu":elu,
+                         "swish":swish,"softmax":softmax,"tanh":tanh,
+                         "identity":identity}
+        
+        assert activation in activation_dict.keys(), f"The activation function\
+            must be in {[option for option in activation_dict.keys()]}"
+        
+        self.activation=activation_dict[activation]
+
     def compute_output_value(self,input:torch.tensor)->None:
         """
         The goal of this function is

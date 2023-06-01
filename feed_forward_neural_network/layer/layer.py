@@ -17,6 +17,9 @@ class layer:
         neuron of the layer
         -hidden_size: int: The number
         of neurons in the layer
+        -activation: str: The activation
+        function for all the neurons of
+        this layer 
         -first_layer: bool: Whether
         or not it is the firs layer, 
         in which case all weights are 
@@ -26,19 +29,21 @@ class layer:
     """
 
     def __init__(self, input_size: int, hidden_size: int, 
-                 first_layer:str=False, *args, **kwargs)->None:
+                 first_layer:str=False, activation: str="ReLU",*args, **kwargs)->None:
         
         self.input_size=input_size
         self.hidden_size=hidden_size
-        
+        self.activation=activation
+
         if first_layer:
-            self.layer_neurons=np.array([neuron(bias=x, weight=y) 
+            self.layer_neurons=np.array([neuron(bias=x, weight=y, activation="identity") 
                                          for x, y in zip(torch.zeros(
                                             size=(1,self.input_size)),
                                             torch.ones(size=(1,self.input_size)))])
             self.is_first_layer=True
         else:
-            self.layer_neurons=np.array([neuron(bias=x, weight=torch.randn(size=(self.input_size,1))) 
+            self.layer_neurons=np.array([neuron(bias=x, weight=torch.randn(size=(self.input_size,1))
+                                                ,activation=activation) 
                                      for x in torch.randn(
                                     size=(self.hidden_size,1))])
             self.is_first_layer=False
