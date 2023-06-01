@@ -24,16 +24,20 @@ class layer:
         or not it is the firs layer, 
         in which case all weights are 
         set to 1 and biaises to 0
+        -last_layer: bool: Whether
+        or not it is the last layer
+        of the network
     Returns:
         -None
     """
 
     def __init__(self, input_size: int, hidden_size: int, 
-                 first_layer:str=False, activation: str="ReLU",*args, **kwargs)->None:
+                 first_layer:bool=False, last_layer:bool=False,activation: str="ReLU",*args, **kwargs)->None:
         
         self.input_size=input_size
         self.hidden_size=hidden_size
         self.activation=activation
+        self.last_layer=last_layer
 
         if first_layer:
             self.layer_neurons=np.array([neuron(bias=x, weight=y, activation="identity") 
