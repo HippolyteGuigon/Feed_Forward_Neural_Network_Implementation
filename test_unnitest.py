@@ -1,4 +1,6 @@
 import unittest
+import logging
+from feed_forward_neural_network.logs.logs import main
 
 
 class Test(unittest.TestCase):
@@ -6,6 +8,8 @@ class Test(unittest.TestCase):
     The goal of this class is to implement unnitest
     and check everything commited makes sense
     """
+
+    logging.info("Unnitest session has begun")
 
     def test_single_forward_batch(self) -> None:
         """
@@ -19,4 +23,5 @@ class Test(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    main()
     unittest.main()
