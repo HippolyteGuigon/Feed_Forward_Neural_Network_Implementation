@@ -2,6 +2,7 @@
 
 *.txt
 *.ipynb
+.vscode/
 
 #Except these files
 
