@@ -1,0 +1,4 @@
+name: fnn_implementation_environment
+channels:
+  - defaults
+prefix: /Applications/anaconda3/envs/fnn_implementation_environment
