@@ -16,6 +16,7 @@ def categorical_cross_entropy(y_pred: torch.tensor, y_true:torch.tensor):
         -loss: torch.tensor(float): The computed
         loss     
     """
-
+    epsilon = 1e-30
+    y_pred = torch.clamp(y_pred, epsilon, 1.0)
     loss=-(y_true.float().T@torch.log2(y_pred))
     return loss
