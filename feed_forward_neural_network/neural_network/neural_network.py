@@ -73,10 +73,9 @@ class neural_network:
 
         layer.get_all_outputs()
         layer.all_outputs = layer.all_outputs.T
-        layer.all_outputs = [np.array(x) for x in layer.all_outputs]
-        final_scores = torch.tensor([softmax(x) for x in layer.all_outputs])
+        final_scores = torch.tensor([np.array(softmax(x)) for x in layer.all_outputs])
         final_results = torch.tensor([torch.argmax(x) for x in final_scores])
-        return final_results
+        return final_scores, final_results
 
     def loss_compute(self, layer, target: torch.tensor) -> torch.tensor:
         """
