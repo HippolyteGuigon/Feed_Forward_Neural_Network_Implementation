@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 from feed_forward_neural_network.activation.activation import softmax
 from feed_forward_neural_network.loss.loss import categorical_cross_entropy
 
@@ -23,7 +24,7 @@ class neural_network:
         self, input_data: torch.tensor, loss: str = "categorical_cross_entropy"
     ):
         self.input_data = input_data
-        
+
     def forward(self, layer_1, layer_2) -> None:
         """
         The goal of this function
@@ -71,9 +72,11 @@ class neural_network:
             on the last layer of the network !"
 
         layer.get_all_outputs()
-        final_scores = layer.all_outputs.apply_(lambda x: softmax(torch.tensor(x)))
-        
-        return torch.argmax(final_scores)
+        layer.all_outputs = layer.all_outputs.T
+        layer.all_outputs = [np.array(x) for x in layer.all_outputs]
+        final_scores = torch.tensor([softmax(x) for x in layer.all_outputs])
+        final_results = torch.tensor([torch.argmax(x) for x in final_scores])
+        return final_results
 
     def loss_compute(self, layer, target: torch.tensor) -> torch.tensor:
         """

@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 
 
@@ -87,8 +88,8 @@ def softmax(x: torch.tensor) -> torch.tensor:
         the value of the activation
     """
 
-    denominator = torch.sum(torch.exp(x)).item()
-    activation_value = torch.tensor([torch.exp(t).item() / denominator for t in x])
+    denominator = np.sum(np.exp(x))
+    activation_value = np.array([np.exp(t) / denominator for t in x])
     return activation_value
 
 
