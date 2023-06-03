@@ -104,6 +104,7 @@ class neural_network:
 
         layer.get_all_outputs()
         final_scores, final_results = self.output(layer)
-        loss = categorical_cross_entropy(final_scores, target)
-
+        loss_values = torch.stack([categorical_cross_entropy(y_true, y_pred) for\
+                       y_true, y_pred in zip(final_scores,target)])
+        loss=torch.mean(loss_values)
         return loss
