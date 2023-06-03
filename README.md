@@ -5,7 +5,6 @@ The goal of this repository is the implementation of a Feed-Forward Neural Netwo
 
 For the moment, the one-path computation is ready for a single-batch compute. The next steps are:  
 
-* The availability for the Feed-Forward Neural network to support multiple data in a single batch
 * To code the backpropagation process in order to optimize the network
 * To compute options that will make it possible for the user avoiding overfitting (L1/L2 regularization, dropout etc...)
 * To have software-engineering friendly actions such as unittesting/ CI-CD

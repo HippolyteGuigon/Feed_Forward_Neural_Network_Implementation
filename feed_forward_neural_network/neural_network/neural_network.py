@@ -21,9 +21,10 @@ class neural_network:
     """
 
     def __init__(
-        self, input_data: torch.tensor, loss: str = "categorical_cross_entropy"
+        self, input_data: torch.tensor, targets: torch.tensor,loss: str = "categorical_cross_entropy"
     ):
         self.input_data = input_data
+        self.targets = targets
 
     def forward(self, layer_1, layer_2) -> None:
         """
@@ -102,7 +103,7 @@ class neural_network:
             on the last layer of the network !"
 
         layer.get_all_outputs()
-        final_scores = softmax(layer.all_outputs)
+        final_scores, final_results = self.output(layer)
         loss = categorical_cross_entropy(final_scores, target)
 
         return loss
