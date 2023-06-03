@@ -64,7 +64,7 @@ class layer:
                     neuron(
                         bias=x,
                         weight=torch.randn(size=(self.input_size, 1)),
-                        activation=activation,
+                        activation=activation
                     )
                     for x in torch.randn(size=(self.hidden_size, 1))
                 ]

@@ -71,7 +71,8 @@ class neural_network:
             on the last layer of the network !"
 
         layer.get_all_outputs()
-        final_scores = softmax(layer.all_outputs)
+        final_scores = layer.all_outputs.apply_(lambda x: softmax(torch.tensor(x)))
+        
         return torch.argmax(final_scores)
 
     def loss_compute(self, layer, target: torch.tensor) -> torch.tensor:
