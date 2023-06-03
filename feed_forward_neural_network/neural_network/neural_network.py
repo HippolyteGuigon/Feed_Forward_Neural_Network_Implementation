@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 from feed_forward_neural_network.layer.layer import layer
 from feed_forward_neural_network.activation.activation import softmax
 from feed_forward_neural_network.loss.loss import categorical_cross_entropy
@@ -48,7 +49,24 @@ class neural_network:
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1.all_outputs)
         
+    def full_forward(self, **layers)->torch.tensor:
+        """
+        Thee goal of this function
+        is to compute all outputs in
+        a batch
         
+        Arguments:
+            -**layers: All layers that
+            will be part of the neuron network
+        Returns:
+            -outputs: torch.tensor: The outputs
+            of the batch
+        """
+
+        self.layers=[layer for x in layers.values()]
+        assert self.layers[0].first_layer, "The first layer has not been declared as such in its attributes"
+        assert self.layers[-1].last_layer, "The last layer has not been declared as such in its attributes"
+
     def output(self, layer)->torch.tensor:
         """
         The goal of this function
