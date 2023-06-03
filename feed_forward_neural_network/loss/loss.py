@@ -17,5 +17,5 @@ def categorical_cross_entropy(y_pred: torch.tensor, y_true:torch.tensor):
         loss     
     """
 
-    loss=-(y_true.float()@torch.log2(y_pred))
+    loss=-(y_true.float().T@torch.log2(y_pred))
     return loss
