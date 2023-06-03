@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 
-def get_fake_label(x: int)->torch.tensor:
+def get_label(x: int)->torch.tensor:
     """
     The goal of this function
     is to generate fake labels
