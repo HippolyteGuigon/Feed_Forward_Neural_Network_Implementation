@@ -23,7 +23,7 @@ class neural_network:
         self, input_data: torch.tensor, loss: str = "categorical_cross_entropy"
     ):
         self.input_data = input_data
-
+        
     def forward(self, layer_1, layer_2) -> None:
         """
         The goal of this function

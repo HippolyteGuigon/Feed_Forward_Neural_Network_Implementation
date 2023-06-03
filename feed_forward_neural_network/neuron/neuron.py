@@ -64,7 +64,7 @@ class neuron:
             -None
         """
 
-        output_value = self.weight.T @ input.T
+        output_value = self.weight.T @ input
         output_value += self.bias
         output_value = output_value.apply_(lambda x: self.activation(x))
-        self.output_value = output_value
+        self.output_value = output_value.squeeze()
