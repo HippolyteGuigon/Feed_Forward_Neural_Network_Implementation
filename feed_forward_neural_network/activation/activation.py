@@ -88,9 +88,11 @@ def softmax(x: torch.tensor) -> torch.tensor:
         the value of the activation
     """
 
-    denominator = np.sum(np.exp(x))
-    activation_value = np.array([np.exp(t) / denominator for t in x])
-    return activation_value
+    max_val = torch.max(x)
+    log_softmax = x - max_val - torch.log(torch.sum(torch.exp(x - max_val)))
+    #denominator = np.sum(np.exp(x))
+    #activation_value = np.array([np.exp(t) / denominator for t in x])
+    return torch.exp(log_softmax)
 
 
 def tanh(x: torch.tensor) -> torch.tensor:
