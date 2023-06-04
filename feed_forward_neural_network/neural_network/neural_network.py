@@ -24,12 +24,17 @@ class neural_network:
         -loss: str: The loss function
         that will be appplied at the
         end of the network
+        -epochs: int: The number of 
+        epochs, the number of time
+        training data will go throught
+        the network
     Returns:
         -None
     """
 
     def __init__(
-        self, input_data: torch.tensor, targets: torch.tensor,loss: str = "categorical_cross_entropy"
+        self, input_data: torch.tensor, targets: torch.tensor,loss: str = "categorical_cross_entropy",
+        epochs: int=10
     ):
         self.input_data = input_data
         self.targets = targets
@@ -59,7 +64,21 @@ class neural_network:
             layer_1.get_all_outputs()
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1.all_outputs)
-
+    
+    def fit(self)->None:
+        """
+        The goal of this function
+        is to launch the overall 
+        training process with
+        backpropagation
+        
+        Arguments:
+            -None
+        Returns:
+            -None
+        """
+        pass
+    
     def output(self, layer) -> torch.tensor:
         """
         The goal of this function
