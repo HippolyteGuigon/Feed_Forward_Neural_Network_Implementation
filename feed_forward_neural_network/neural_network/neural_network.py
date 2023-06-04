@@ -30,6 +30,7 @@ class neural_network:
         epochs, the number of time
         training data will go throught
         the network
+    
     Returns:
         -None
     """
@@ -77,6 +78,7 @@ class neural_network:
             layer_1.get_all_outputs()
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1.all_outputs)
+            layer_2.get_all_outputs()
 
     def fit(self, layer_list: List) -> None:
         """
@@ -106,12 +108,18 @@ class neural_network:
         for epoch in range(self.epochs):
             last_index = 0
             while last_index < self.input_data.size()[1]:
-                for layer_index in range(0, len(layer_list) - 2):
+                for layer_index in range(0, len(layer_list)-1):
                     self.forward(
                         layer_list[layer_index],
                         layer_list[layer_index + 1],
                         last_index=last_index,
                     )
+
+                    #for n, lay in enumerate(layer_list[1:]):
+                    #    print(n)
+                    #    lay.get_all_outputs()
+                    #x, y = self.output(layer_list[-1])
+                    #print(f"Loss: {self.loss_compute(layer_list[-1],self.targets[last_index:last_index+self.batch_size]):.2f}")
                 last_index += self.batch_size
 
     def output(self, layer) -> torch.tensor:
@@ -133,11 +141,11 @@ class neural_network:
             layer.last_layer
         ), "Output can only be computed\
             on the last layer of the network !"
-
         layer.get_all_outputs()
         layer.all_outputs = layer.all_outputs.T
         final_scores = torch.tensor([np.array(softmax(x)) for x in layer.all_outputs])
         final_results = torch.tensor([torch.argmax(x) for x in final_scores])
+
         return final_scores, final_results
 
     def loss_compute(self, layer, target: torch.tensor) -> torch.tensor:
