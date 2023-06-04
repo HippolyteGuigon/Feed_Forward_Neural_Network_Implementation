@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from feed_forward_neural_network.activation.activation import softmax
 from feed_forward_neural_network.loss.loss import categorical_cross_entropy
-
+from feed_forward_neural_network.metrics.metrics import accuracy
 
 class neural_network:
     """
@@ -108,3 +108,30 @@ class neural_network:
                        y_true, y_pred in zip(final_scores,target)])
         loss=torch.mean(loss_values)
         return loss
+
+    def get_metric(self, layer, metric:str="accuracy"):
+        """
+        The goal of this function
+        is to get the accuracy of 
+        the network
+        
+        Arguments:
+            -metric: str: The metric
+            that is wanted
+            -layer: The last layer
+            of the network
+        Returns:
+            -result: float: The metric
+            computed
+        """
+
+        assert (
+            layer.last_layer
+        ), "Metric can only be computed\
+            on the last layer of the network !"
+        
+        y_true=torch.tensor([torch.argmax(x) for x in self.targets])
+        _, y_pred=self.output(layer)
+        
+        if metric=="accuracy":
+            return accuracy(y_true,y_pred)
