@@ -1,8 +1,16 @@
 import torch
+import logging
 import numpy as np
 from feed_forward_neural_network.activation.activation import softmax
 from feed_forward_neural_network.loss.loss import categorical_cross_entropy
 from feed_forward_neural_network.metrics.metrics import accuracy
+from feed_forward_neural_network.logs.logs import main
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
+
+main()
 
 class neural_network:
     """
@@ -107,6 +115,8 @@ class neural_network:
         loss_values = torch.stack([categorical_cross_entropy(y_true, y_pred) for\
                        y_true, y_pred in zip(final_scores,target)])
         loss=torch.mean(loss_values)
+        logging.info(f"Loss computed: {loss:.2f}")
+
         return loss
 
     def get_metric(self, layer, metric:str="accuracy"):
@@ -134,4 +144,5 @@ class neural_network:
         _, y_pred=self.output(layer)
         
         if metric=="accuracy":
+            logging.info(f"Accuracy computed: {accuracy(y_true,y_pred):.2f}")
             return accuracy(y_true,y_pred)
