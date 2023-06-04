@@ -115,11 +115,7 @@ class neural_network:
                         last_index=last_index,
                     )
 
-                    #for n, lay in enumerate(layer_list[1:]):
-                    #    print(n)
-                    #    lay.get_all_outputs()
-                    #x, y = self.output(layer_list[-1])
-                    #print(f"Loss: {self.loss_compute(layer_list[-1],self.targets[last_index:last_index+self.batch_size]):.2f}")
+                logging.info(f"Epoch: {epoch+1} Loss: {self.loss_compute(layer_list[-1],self.targets[last_index:last_index+self.batch_size]):.2f}, Accuracy: {self.get_metric(layer_list[-1],last_index=last_index)}")
                 last_index += self.batch_size
 
     def output(self, layer) -> torch.tensor:
@@ -181,11 +177,11 @@ class neural_network:
             ]
         )
         loss = torch.mean(loss_values)
-        logging.info(f"Loss computed: {loss:.2f}")
 
         return loss
 
-    def get_metric(self, layer, metric: str = "accuracy"):
+    def get_metric(self, layer, metric: str = "accuracy", 
+                   batch_computation: bool=False, **kwargs):
         """
         The goal of this function
         is to get the accuracy of
@@ -196,6 +192,9 @@ class neural_network:
             that is wanted
             -layer: The last layer
             of the network
+            -batch_computation: bool:
+            Whether or not the metric
+            is computed for a single batch
         Returns:
             -result: float: The metric
             computed
@@ -206,9 +205,11 @@ class neural_network:
         ), "Metric can only be computed\
             on the last layer of the network !"
 
-        y_true = torch.tensor([torch.argmax(x) for x in self.targets])
+        if "last_index" in kwargs.keys():
+            y_true = torch.tensor([torch.argmax(x) for x in self.targets])[kwargs["last_index"]:kwargs["last_index"]+self.batch_size]
+        else:
+            y_true = torch.tensor([torch.argmax(x) for x in self.targets])
         _, y_pred = self.output(layer)
 
         if metric == "accuracy":
-            logging.info(f"Accuracy computed: {accuracy(y_true,y_pred):.2f}")
             return accuracy(y_true, y_pred)
