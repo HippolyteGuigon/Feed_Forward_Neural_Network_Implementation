@@ -1,4 +1,6 @@
 import torch
+import torch.nn as nn
+
 from feed_forward_neural_network.activation.activation import (
     sigmoid,
     ReLU,
@@ -10,7 +12,7 @@ from feed_forward_neural_network.activation.activation import (
 )
 
 
-class neuron:
+class neuron(nn.Module):
     """
     The goal of this class is
     to implement a neuron
@@ -30,6 +32,7 @@ class neuron:
     def __init__(
         self, bias: torch.tensor, weight: torch.tensor, activation: str = "sigmoid"
     ):
+        super(neuron, self).__init__()
         self.bias = bias
         self.weight = weight
 
@@ -66,5 +69,5 @@ class neuron:
 
         output_value = self.weight.T @ input
         output_value += self.bias
-        output_value = output_value.apply_(lambda x: self.activation(x))
+        output_value = output_value.detach().apply_(lambda x: self.activation(x))
         self.output_value = output_value.squeeze()

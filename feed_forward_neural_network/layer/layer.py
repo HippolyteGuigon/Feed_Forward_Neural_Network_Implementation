@@ -59,27 +59,30 @@ class layer:
             )
             self.is_first_layer = True
         else:
-            self.layer_neurons = np.array(
+            self.layer_neurons = torch.nn.ModuleList(
                 [
                     neuron(
                         bias=x,
-                        weight=torch.randn(size=(self.input_size, 1)),
-                        activation=activation
+                        weight=torch.randn(
+                            size=(self.input_size, 1), requires_grad=True
+                        ),
+                        activation=activation,
                     )
-                    for x in torch.randn(size=(self.hidden_size, 1))
+                    for x in torch.randn(size=(self.hidden_size, 1), requires_grad=True)
                 ]
             )
+
             self.is_first_layer = False
 
         if self.hidden_size == 1:
             self.biases = self.layer_neurons[0].bias
             self.weights = self.layer_neurons[0].weight
         else:
-            self.biases = np.array(
-                [np.array(neuron.bias) for neuron in self.layer_neurons]
+            self.biases = torch.stack(
+                [neuron.bias for neuron in self.layer_neurons]
             ).flatten()
-            self.weights = np.array(
-                [np.array(neuron.weight) for neuron in self.layer_neurons]
+            self.weights = torch.stack(
+                [neuron.weight for neuron in self.layer_neurons]
             ).flatten()
 
     def get_all_outputs(self) -> None:
