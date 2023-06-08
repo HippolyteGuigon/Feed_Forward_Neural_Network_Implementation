@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 
 from feed_forward_neural_network.activation.activation import (
+    ReLUFunction,
     sigmoid,
     ReLU,
     elu,
@@ -69,5 +70,7 @@ class neuron(nn.Module):
 
         output_value = self.weight.T @ input
         output_value += self.bias
-        output_value = output_value.detach().apply_(lambda x: self.activation(x))
+        output_value=ReLUFunction.apply(output_value)
+        #output_value=torch.stack([self.activation(x) for x in output_value[0]])
+        #output_value = output_value.detach().apply_(lambda x: self.activation(x))
         self.output_value = output_value.squeeze()

@@ -52,8 +52,8 @@ class layer:
                 [
                     neuron(bias=x, weight=y, activation="identity")
                     for x, y in zip(
-                        torch.zeros(size=(1, self.input_size)),
-                        torch.ones(size=(1, self.input_size)),
+                        torch.zeros(size=(1, self.input_size), requires_grad=True),
+                        torch.ones(size=(1, self.input_size), requires_grad=True),
                     )
                 ]
             )
@@ -106,6 +106,6 @@ class layer:
                              compute them first before calling this function"
             )
 
-        self.all_outputs = torch.tensor(
-            [neuron.output_value.tolist() for neuron in self.layer_neurons]
+        self.all_outputs = torch.stack(
+            [neuron.output_value for neuron in self.layer_neurons]
         )
