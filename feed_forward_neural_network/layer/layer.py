@@ -48,30 +48,16 @@ class layer:
         self.last_layer = last_layer
 
         if first_layer:
-            self.layer_neurons = np.array(
-                [
-                    neuron(bias=x, weight=y, activation="identity")
-                    for x, y in zip(
-                        torch.zeros(size=(1, self.input_size), requires_grad=True),
-                        torch.ones(size=(1, self.input_size), requires_grad=True),
-                    )
-                ]
-            )
+            self.layer_neurons=[]
+            for bias, weight in zip(torch.zeros(size=(self.hidden_size, self.input_size),requires_grad=True),torch.ones(size=(self.hidden_size, self.input_size), requires_grad=True)):
+                self.layer_neurons.append(neuron(bias=bias, weight=weight, activation="identity"))
+            self.layer_neurons=torch.nn.ModuleList(self.layer_neurons)
             self.is_first_layer = True
         else:
-            self.layer_neurons = torch.nn.ModuleList(
-                [
-                    neuron(
-                        bias=x,
-                        weight=torch.randn(
-                            size=(self.input_size, 1), requires_grad=True
-                        ),
-                        activation=activation,
-                    )
-                    for x in torch.randn(size=(self.hidden_size, 1), requires_grad=True)
-                ]
-            )
-
+            self.layer_neurons=[]
+            for bias in torch.randn(size=(self.hidden_size, 1),requires_grad=True):
+                self.layer_neurons.append(neuron(bias=bias, weight=torch.randn(size=(self.input_size, 1), requires_grad=True), activation=activation))
+            self.layer_neurons=torch.nn.ModuleList(self.layer_neurons)
             self.is_first_layer = False
 
         if self.hidden_size == 1:
@@ -105,7 +91,11 @@ class layer:
                 "Neurons do not all have outputs values\
                              compute them first before calling this function"
             )
+        self.all_outputs=[]
 
-        self.all_outputs = torch.stack(
-            [neuron.output_value for neuron in self.layer_neurons]
-        )
+        for neuron in self.layer_neurons:
+            self.all_outputs.append(neuron.output_value)
+        self.all_outputs = torch.stack(self.all_outputs)
+        #self.all_outputs = torch.stack(
+        #    [neuron.output_value for neuron in self.layer_neurons]
+        #)

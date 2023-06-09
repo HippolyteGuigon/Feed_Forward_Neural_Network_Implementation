@@ -74,12 +74,13 @@ class neural_network:
             ]
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1_output)
+            
         else:
             layer_1.get_all_outputs()
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1.all_outputs)
             layer_2.get_all_outputs()
-            
+        
     def fit(self, layer_list: List) -> None:
         """
         The goal of this function
@@ -118,7 +119,10 @@ class neural_network:
                 loss=self.loss_compute(layer_list[-1],
                                        self.targets[last_index:last_index+self.batch_size])
                 loss.backward()
-                    
+                
+                for layer in layer_list:
+                    for neuron in layer.layer_neurons:
+                        print("Gradient !!!!",neuron.weight.grad)
                 logging.info(f"Epoch: {epoch+1} Loss: {loss.item():.2f}, Accuracy: {self.get_metric(layer_list[-1],last_index=last_index)}")
                 last_index += self.batch_size
 
@@ -174,7 +178,7 @@ class neural_network:
 
         layer.get_all_outputs()
         final_scores, final_results = self.output(layer)
-        
+    
         loss_values=[]
 
         for y_true, y_pred in zip(final_scores, target):
@@ -208,7 +212,7 @@ class neural_network:
             layer.last_layer
         ), "Metric can only be computed\
             on the last layer of the network !"
-
+    
         if "last_index" in kwargs.keys():
             y_true = torch.tensor([torch.argmax(x) for x in self.targets])[kwargs["last_index"]:kwargs["last_index"]+self.batch_size]
         else:

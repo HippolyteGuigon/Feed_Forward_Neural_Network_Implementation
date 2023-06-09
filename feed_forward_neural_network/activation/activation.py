@@ -2,15 +2,13 @@ import numpy as np
 import torch
 
 def safe_softmax(input):
-    with torch.no_grad():
-        max_vals, _ = input.max(dim=1, keepdim=True)
-        shifted_input = input - max_vals
-        exp_shifted_input = torch.exp(shifted_input)
-        softmax_output = exp_shifted_input / exp_shifted_input.sum(dim=1, keepdim=True)
-        softmax_output[torch.isnan(softmax_output)] = 0.0
-        softmax_output[torch.isinf(softmax_output)] = 0.0
-        softmax_output = softmax_output / softmax_output.sum(dim=1, keepdim=True)
-    softmax_output.requires_grad = True  # Activation du suivi de gradient pour le tenseur
+    max_vals, _ = input.max(dim=1, keepdim=True)
+    shifted_input = input - max_vals
+    exp_shifted_input = torch.exp(shifted_input)
+    softmax_output = exp_shifted_input / exp_shifted_input.sum(dim=1, keepdim=True)
+    softmax_output[torch.isnan(softmax_output)] = 0.0
+    softmax_output[torch.isinf(softmax_output)] = 0.0
+    softmax_output = softmax_output / softmax_output.sum(dim=1, keepdim=True)
     return softmax_output
     
 class ReLUFunction(torch.autograd.Function):
