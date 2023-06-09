@@ -74,13 +74,19 @@ class neural_network:
             ]
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1_output)
-            
+
+            layer_2.layer_neurons[0].output_value[0].backward(retain_graph=True)
+            print("GRADIENT !!!",layer_2.layer_neurons[0].weight.grad.size())
+            print("GRADIENT !!!",layer_2.layer_neurons[0].bias.grad.size())
         else:
             layer_1.get_all_outputs()
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1.all_outputs)
             layer_2.get_all_outputs()
-        
+            
+            layer_2.layer_neurons[0].output_value[0].backward(retain_graph=True)
+            print("GRADIENT !!!",layer_2.layer_neurons[0].weight.grad.size())
+            print("GRADIENT !!!",layer_2.layer_neurons[0].bias.grad.size())
     def fit(self, layer_list: List) -> None:
         """
         The goal of this function
@@ -120,9 +126,10 @@ class neural_network:
                                        self.targets[last_index:last_index+self.batch_size])
                 loss.backward()
                 
-                for layer in layer_list:
-                    for neuron in layer.layer_neurons:
-                        print("Gradient !!!!",neuron.weight.grad)
+                #with torch.no_grad():
+                #    for neuron in layer_list[-1].layer_neurons:
+                #        print(neuron.weight.grad.size())
+                #        neuron.bias-=neuron.bias.grad
                 logging.info(f"Epoch: {epoch+1} Loss: {loss.item():.2f}, Accuracy: {self.get_metric(layer_list[-1],last_index=last_index)}")
                 last_index += self.batch_size
 

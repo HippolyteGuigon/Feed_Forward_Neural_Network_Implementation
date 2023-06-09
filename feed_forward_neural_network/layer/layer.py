@@ -55,8 +55,8 @@ class layer:
             self.is_first_layer = True
         else:
             self.layer_neurons=[]
-            for bias in torch.randn(size=(self.hidden_size, 1),requires_grad=True):
-                self.layer_neurons.append(neuron(bias=bias, weight=torch.randn(size=(self.input_size, 1), requires_grad=True), activation=activation))
+            for bias in range(self.hidden_size):
+                self.layer_neurons.append(neuron(bias=torch.randn(size=(1, 1),requires_grad=True), weight=torch.randn(size=(self.input_size, 1), requires_grad=True), activation=activation))
             self.layer_neurons=torch.nn.ModuleList(self.layer_neurons)
             self.is_first_layer = False
 
