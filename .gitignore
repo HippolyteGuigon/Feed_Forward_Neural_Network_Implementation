@@ -4,6 +4,7 @@
 *.ipynb
 .vscode/
 data/*
+*.icloud
 
 #Except these files
 

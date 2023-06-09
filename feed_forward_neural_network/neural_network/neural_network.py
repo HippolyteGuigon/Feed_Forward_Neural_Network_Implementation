@@ -2,7 +2,7 @@ import torch
 import logging
 import numpy as np
 from typing import List
-from feed_forward_neural_network.activation.activation import softmax
+from feed_forward_neural_network.activation.activation import softmax, safe_softmax
 from feed_forward_neural_network.loss.loss import categorical_cross_entropy
 from feed_forward_neural_network.metrics.metrics import accuracy
 from feed_forward_neural_network.logs.logs import main
@@ -74,12 +74,19 @@ class neural_network:
             ]
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1_output)
+
+            layer_2.layer_neurons[0].output_value[0].backward(retain_graph=True)
+            print("GRADIENT !!!",layer_2.layer_neurons[0].weight.grad.size())
+            print("GRADIENT !!!",layer_2.layer_neurons[0].bias.grad.size())
         else:
             layer_1.get_all_outputs()
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1.all_outputs)
             layer_2.get_all_outputs()
-
+            
+            layer_2.layer_neurons[0].output_value[0].backward(retain_graph=True)
+            print("GRADIENT !!!",layer_2.layer_neurons[0].weight.grad.size())
+            print("GRADIENT !!!",layer_2.layer_neurons[0].bias.grad.size())
     def fit(self, layer_list: List) -> None:
         """
         The goal of this function
@@ -114,8 +121,16 @@ class neural_network:
                         layer_list[layer_index + 1],
                         last_index=last_index,
                     )
-
-                logging.info(f"Epoch: {epoch+1} Loss: {self.loss_compute(layer_list[-1],self.targets[last_index:last_index+self.batch_size]):.2f}, Accuracy: {self.get_metric(layer_list[-1],last_index=last_index)}")
+                
+                loss=self.loss_compute(layer_list[-1],
+                                       self.targets[last_index:last_index+self.batch_size])
+                loss.backward()
+                
+                #with torch.no_grad():
+                #    for neuron in layer_list[-1].layer_neurons:
+                #        print(neuron.weight.grad.size())
+                #        neuron.bias-=neuron.bias.grad
+                logging.info(f"Epoch: {epoch+1} Loss: {loss.item():.2f}, Accuracy: {self.get_metric(layer_list[-1],last_index=last_index)}")
                 last_index += self.batch_size
 
     def output(self, layer) -> torch.tensor:
@@ -138,8 +153,8 @@ class neural_network:
         ), "Output can only be computed\
             on the last layer of the network !"
         layer.get_all_outputs()
-        layer.all_outputs = layer.all_outputs.T
-        final_scores = torch.tensor([np.array(softmax(x)) for x in layer.all_outputs])
+        
+        final_scores=safe_softmax(layer.all_outputs.T)
         final_results = torch.tensor([torch.argmax(x) for x in final_scores])
 
         return final_scores, final_results
@@ -148,7 +163,7 @@ class neural_network:
         """
         The goal of this function
         is to compute the loss made
-        by the moodel afer having
+        by the model afer having
         produced its predictions
 
         Arguments:
@@ -170,13 +185,13 @@ class neural_network:
 
         layer.get_all_outputs()
         final_scores, final_results = self.output(layer)
-        loss_values = torch.stack(
-            [
-                categorical_cross_entropy(y_true, y_pred)
-                for y_true, y_pred in zip(final_scores, target)
-            ]
-        )
-        loss = torch.mean(loss_values)
+    
+        loss_values=[]
+
+        for y_true, y_pred in zip(final_scores, target):
+            loss=categorical_cross_entropy(y_pred,y_true)
+            loss_values.append(loss)
+        loss=torch.stack(loss_values).mean()
 
         return loss
 
@@ -204,7 +219,7 @@ class neural_network:
             layer.last_layer
         ), "Metric can only be computed\
             on the last layer of the network !"
-
+    
         if "last_index" in kwargs.keys():
             y_true = torch.tensor([torch.argmax(x) for x in self.targets])[kwargs["last_index"]:kwargs["last_index"]+self.batch_size]
         else:

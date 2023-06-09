@@ -1,7 +1,44 @@
 import numpy as np
 import torch
 
+def safe_softmax(input):
+    max_vals, _ = input.max(dim=1, keepdim=True)
+    shifted_input = input - max_vals
+    exp_shifted_input = torch.exp(shifted_input)
+    softmax_output = exp_shifted_input / exp_shifted_input.sum(dim=1, keepdim=True)
+    softmax_output[torch.isnan(softmax_output)] = 0.0
+    softmax_output[torch.isinf(softmax_output)] = 0.0
+    softmax_output = softmax_output / softmax_output.sum(dim=1, keepdim=True)
+    return softmax_output
+    
+class ReLUFunction(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, input):
+        ctx.save_for_backward(input)  # Enregistrez les tenseurs nécessaires pour la rétropropagation
+        output = torch.relu(input)  # Appliquez la fonction ReLU sur le tenseur d'entrée
+        return output
 
+    @staticmethod
+    def backward(ctx, grad_output):
+        input, = ctx.saved_tensors  # Récupérez les tenseurs enregistrés pendant le forward
+        grad_input = grad_output.clone()  # Clonez le gradient de sortie
+        grad_input[input < 0] = 0  # Appliquez le masque de la fonction ReLU pour les gradients négatifs
+        return grad_input
+
+class SoftmaxFunction(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, input):
+        exp_input = torch.exp(input)
+        softmax_output = exp_input / exp_input.sum(dim=1, keepdim=True)
+        ctx.save_for_backward(softmax_output)  # Enregistrez les tenseurs nécessaires pour la rétropropagation
+        return softmax_output
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        softmax_output, = ctx.saved_tensors  # Récupérez les tenseurs enregistrés pendant le forward
+        grad_input = softmax_output * (grad_output - (softmax_output * grad_output).sum(dim=1, keepdim=True))
+        return grad_input   
+    
 def elu(x: torch.tensor, alpha: float) -> float:
     """
     The goal of this function is
