@@ -1,6 +1,7 @@
 import torch
 import logging
 import numpy as np
+import torch.nn.functional as F
 from typing import List
 from feed_forward_neural_network.activation.activation import softmax, safe_softmax
 from feed_forward_neural_network.loss.loss import categorical_cross_entropy
@@ -74,19 +75,12 @@ class neural_network:
             ]
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1_output)
-
-            layer_2.layer_neurons[0].output_value[0].backward(retain_graph=True)
-            print("GRADIENT !!!",layer_2.layer_neurons[0].weight.grad.size())
-            print("GRADIENT !!!",layer_2.layer_neurons[0].bias.grad.size())
         else:
             layer_1.get_all_outputs()
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1.all_outputs)
             layer_2.get_all_outputs()
             
-            layer_2.layer_neurons[0].output_value[0].backward(retain_graph=True)
-            print("GRADIENT !!!",layer_2.layer_neurons[0].weight.grad.size())
-            print("GRADIENT !!!",layer_2.layer_neurons[0].bias.grad.size())
     def fit(self, layer_list: List) -> None:
         """
         The goal of this function
@@ -124,12 +118,8 @@ class neural_network:
                 
                 loss=self.loss_compute(layer_list[-1],
                                        self.targets[last_index:last_index+self.batch_size])
-                loss.backward()
-                
-                #with torch.no_grad():
-                #    for neuron in layer_list[-1].layer_neurons:
-                #        print(neuron.weight.grad.size())
-                #        neuron.bias-=neuron.bias.grad
+                loss.backward(retain_graph=True)               
+                        
                 logging.info(f"Epoch: {epoch+1} Loss: {loss.item():.2f}, Accuracy: {self.get_metric(layer_list[-1],last_index=last_index)}")
                 last_index += self.batch_size
 
@@ -153,8 +143,8 @@ class neural_network:
         ), "Output can only be computed\
             on the last layer of the network !"
         layer.get_all_outputs()
-        
-        final_scores=safe_softmax(layer.all_outputs.T)
+        #Ça déconne au niveau du ReLU !
+        final_scores= F.softmax(layer.all_outputs.T,dim=1)
         final_results = torch.tensor([torch.argmax(x) for x in final_scores])
 
         return final_scores, final_results
@@ -185,14 +175,14 @@ class neural_network:
 
         layer.get_all_outputs()
         final_scores, final_results = self.output(layer)
-    
+        
+        self.final_scores=final_scores
         loss_values=[]
 
-        for y_true, y_pred in zip(final_scores, target):
+        for y_true, y_pred in zip(self.final_scores, target):
             loss=categorical_cross_entropy(y_pred,y_true)
             loss_values.append(loss)
         loss=torch.stack(loss_values).mean()
-
         return loss
 
     def get_metric(self, layer, metric: str = "accuracy", 

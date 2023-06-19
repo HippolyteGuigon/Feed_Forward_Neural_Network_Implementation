@@ -70,7 +70,6 @@ class neuron(nn.Module):
 
         output_value = self.weight.T @ input
         output_value += self.bias
+        intermediate_output=output_value
         output_value=ReLUFunction.apply(output_value)
-        #output_value=torch.stack([self.activation(x) for x in output_value[0]])
-        #output_value = output_value.detach().apply_(lambda x: self.activation(x))
         self.output_value = output_value.squeeze()
