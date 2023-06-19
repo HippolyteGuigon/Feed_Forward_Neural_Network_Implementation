@@ -70,6 +70,6 @@ class neuron(nn.Module):
 
         output_value = self.weight.T @ input
         output_value += self.bias
-        intermediate_output=output_value
-        output_value=ReLUFunction.apply(output_value)
+        intermediate_output = output_value
+        output_value = sigmoid(output_value)
         self.output_value = output_value.squeeze()
