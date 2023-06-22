@@ -7,6 +7,7 @@ from feed_forward_neural_network.activation.activation import softmax, safe_soft
 from feed_forward_neural_network.loss.loss import categorical_cross_entropy
 from feed_forward_neural_network.metrics.metrics import accuracy
 from feed_forward_neural_network.logs.logs import main
+from feed_forward_neural_network.optimizer.optimizer import gradient_descent
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -14,8 +15,10 @@ formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
 
 main()
 
+optimizer = gradient_descent
 
-class neural_network:
+
+class neural_network(optimizer):
     """
     The goal of this class
     is the full implementation
@@ -31,7 +34,13 @@ class neural_network:
         epochs, the number of time
         training data will go throught
         the network
-    
+        -batch_size: int: The number of
+        data that will go throught the network
+        at the same time
+        -lr: float: The learning rate that
+        will be used for the training of the
+        network
+
     Returns:
         -None
     """
@@ -43,14 +52,17 @@ class neural_network:
         loss: str = "categorical_cross_entropy",
         epochs: int = 10,
         batch_size: int = 64,
-        lr: float = 0.1
+        lr: float = 0.1,
     ):
+        super().__init__(lr)
         self.input_data = input_data
         self.targets = targets
         self.epochs = epochs
         self.batch_size = batch_size
         self.lr = lr
-        
+
+        assert self.lr > 0, "The learning rate must be strictly positive"
+
     def forward(self, layer_1, layer_2, last_index: int = 0) -> None:
         """
         The goal of this function
@@ -82,7 +94,7 @@ class neural_network:
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1.all_outputs)
             layer_2.get_all_outputs()
-            
+
     def fit(self, layer_list: List) -> None:
         """
         The goal of this function
@@ -108,41 +120,46 @@ class neural_network:
         ].last_layer, "The last layer of the list\
             must be indicated as such in its arguments"
 
+        self.layer_list = layer_list
+
         for epoch in range(self.epochs):
             last_index = 0
             while last_index < self.input_data.size()[1]:
-                for layer_index in range(0, len(layer_list)-1):
+                for layer_index in range(0, len(self.layer_list) - 1):
                     self.forward(
-                        layer_list[layer_index],
-                        layer_list[layer_index + 1],
+                        self.layer_list[layer_index],
+                        self.layer_list[layer_index + 1],
                         last_index=last_index,
                     )
-                
-                loss=self.loss_compute(layer_list[-1],
-                                       self.targets[last_index:last_index+self.batch_size])
-                loss.backward(retain_graph=True)               
+
+                loss = self.loss_compute(
+                    self.layer_list[-1],
+                    self.targets[last_index : last_index + self.batch_size],
+                )
+                loss.backward(retain_graph=True)
 
                 with torch.no_grad():
-                    
-                    for neuron in layer_list[-1].layer_neurons:
-                        neuron.weight-=self.lr*neuron.weight.grad
-                        neuron.bias-=self.lr*neuron.bias.grad
+                    for neuron in self.layer_list[-1].layer_neurons:
+                        neuron.weight -= self.lr * neuron.weight.grad
+                        neuron.bias -= self.lr * neuron.bias.grad
                         neuron.weight.grad.zero_()
                         neuron.bias.grad.zero_()
 
-                    for neuron in layer_list[-2].layer_neurons:
-                        neuron.weight-=self.lr*neuron.weight.grad
-                        neuron.bias-=self.lr*neuron.bias.grad
+                    for neuron in self.layer_list[-2].layer_neurons:
+                        neuron.weight -= self.lr * neuron.weight.grad
+                        neuron.bias -= self.lr * neuron.bias.grad
                         neuron.weight.grad.zero_()
                         neuron.bias.grad.zero_()
 
-                    for neuron in layer_list[-3].layer_neurons:
-                        neuron.weight-=self.lr*neuron.weight.grad
-                        neuron.bias-=self.lr*neuron.bias.grad
+                    for neuron in self.layer_list[-3].layer_neurons:
+                        neuron.weight -= self.lr * neuron.weight.grad
+                        neuron.bias -= self.lr * neuron.bias.grad
                         neuron.weight.grad.zero_()
                         neuron.bias.grad.zero_()
 
-                logging.info(f"Epoch: {epoch+1} Loss: {loss.item():.2f}, Accuracy: {self.get_metric(layer_list[-1],last_index=last_index)}")
+                logging.info(
+                    f"Epoch: {epoch+1} Loss: {loss.item():.2f}, Accuracy: {self.get_metric(self.layer_list[-1],last_index=last_index)}"
+                )
                 last_index += self.batch_size
 
     def output(self, layer) -> torch.tensor:
@@ -165,8 +182,8 @@ class neural_network:
         ), "Output can only be computed\
             on the last layer of the network !"
         layer.get_all_outputs()
-        #Ça déconne au niveau du ReLU !
-        final_scores= F.softmax(layer.all_outputs.T,dim=1)
+        # Ça déconne au niveau du ReLU !
+        final_scores = F.softmax(layer.all_outputs.T, dim=1)
         final_results = torch.tensor([torch.argmax(x) for x in final_scores])
 
         return final_scores, final_results
@@ -197,18 +214,19 @@ class neural_network:
 
         layer.get_all_outputs()
         final_scores, final_results = self.output(layer)
-        
-        self.final_scores=final_scores
-        loss_values=[]
+
+        self.final_scores = final_scores
+        loss_values = []
 
         for y_true, y_pred in zip(self.final_scores, target):
-            loss=categorical_cross_entropy(y_pred,y_true)
+            loss = categorical_cross_entropy(y_pred, y_true)
             loss_values.append(loss)
-        loss=torch.stack(loss_values).mean()
+        loss = torch.stack(loss_values).mean()
         return loss
 
-    def get_metric(self, layer, metric: str = "accuracy", 
-                   batch_computation: bool=False, **kwargs):
+    def get_metric(
+        self, layer, metric: str = "accuracy", batch_computation: bool = False, **kwargs
+    ):
         """
         The goal of this function
         is to get the accuracy of
@@ -231,9 +249,11 @@ class neural_network:
             layer.last_layer
         ), "Metric can only be computed\
             on the last layer of the network !"
-    
+
         if "last_index" in kwargs.keys():
-            y_true = torch.tensor([torch.argmax(x) for x in self.targets])[kwargs["last_index"]:kwargs["last_index"]+self.batch_size]
+            y_true = torch.tensor([torch.argmax(x) for x in self.targets])[
+                kwargs["last_index"] : kwargs["last_index"] + self.batch_size
+            ]
         else:
             y_true = torch.tensor([torch.argmax(x) for x in self.targets])
         _, y_pred = self.output(layer)
