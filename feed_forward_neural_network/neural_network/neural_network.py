@@ -121,7 +121,8 @@ class neural_network(optimizer):
             must be indicated as such in its arguments"
 
         self.layer_list = layer_list
-
+        super().get_new_layer_list(layer_list)
+        
         for epoch in range(self.epochs):
             last_index = 0
             while last_index < self.input_data.size()[1]:
@@ -138,27 +139,8 @@ class neural_network(optimizer):
                 )
                 loss.backward(retain_graph=True)
 
-                with torch.no_grad():
-                    for neuron in self.layer_list[-1].layer_neurons:
-                        neuron.weight -= self.lr * neuron.weight.grad
-                        neuron.bias -= self.lr * neuron.bias.grad
-                        neuron.weight.grad.zero_()
-                        neuron.bias.grad.zero_()
-
-                    for neuron in self.layer_list[-2].layer_neurons:
-                        neuron.weight -= self.lr * neuron.weight.grad
-                        neuron.bias -= self.lr * neuron.bias.grad
-                        neuron.weight.grad.zero_()
-                        neuron.bias.grad.zero_()
-
-                    for neuron in self.layer_list[-3].layer_neurons:
-                        neuron.weight -= self.lr * neuron.weight.grad
-                        neuron.bias -= self.lr * neuron.bias.grad
-                        neuron.weight.grad.zero_()
-                        neuron.bias.grad.zero_()
-
-                        super().get_new_layer_list(self.layer_list)
-
+                self.layer_list=super().step()
+                
                 logging.info(
                     f"Epoch: {epoch+1} Loss: {loss.item():.2f}, Accuracy: {self.get_metric(self.layer_list[-1],last_index=last_index)}"
                 )

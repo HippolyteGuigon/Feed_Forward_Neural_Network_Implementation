@@ -1,3 +1,4 @@
+import torch
 from typing import List
 
 
@@ -9,5 +10,14 @@ class gradient_descent:
     def get_new_layer_list(self, new_layer_list: List):
         self.layer_list = new_layer_list
 
-    def optimizer(self):
-        pass
+    def step(self):
+        with torch.no_grad():
+            for layer in self.layer_list[1:]:
+                    for neuron in layer.layer_neurons:
+                        neuron.weight -= self.lr * neuron.weight.grad
+                        neuron.bias -= self.lr * neuron.bias.grad
+                        neuron.weight.grad.zero_()
+                        neuron.bias.grad.zero_()
+
+        return self.layer_list
+        
