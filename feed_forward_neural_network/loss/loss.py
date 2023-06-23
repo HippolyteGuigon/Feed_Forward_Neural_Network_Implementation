@@ -1,6 +1,5 @@
 import torch
 
-
 def categorical_cross_entropy(
     y_pred: torch.tensor, y_true: torch.tensor
 ) -> torch.tensor:

@@ -6,8 +6,8 @@ def safe_softmax(input):
     shifted_input = input - max_vals
     exp_shifted_input = torch.exp(shifted_input)
     softmax_output = exp_shifted_input / exp_shifted_input.sum(dim=1, keepdim=True)
-    softmax_output[torch.isnan(softmax_output)] = 0.0
-    softmax_output[torch.isinf(softmax_output)] = 0.0
+    softmax_output = torch.where(torch.isnan(softmax_output), torch.zeros_like(softmax_output), softmax_output)
+    softmax_output = torch.where(torch.isinf(softmax_output), torch.zeros_like(softmax_output), softmax_output)
     softmax_output = softmax_output / softmax_output.sum(dim=1, keepdim=True)
     return softmax_output
     
