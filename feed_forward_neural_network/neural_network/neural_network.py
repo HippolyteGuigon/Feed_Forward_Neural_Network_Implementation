@@ -157,6 +157,8 @@ class neural_network(optimizer):
                         neuron.weight.grad.zero_()
                         neuron.bias.grad.zero_()
 
+                        super().get_new_layer_list(self.layer_list)
+
                 logging.info(
                     f"Epoch: {epoch+1} Loss: {loss.item():.2f}, Accuracy: {self.get_metric(self.layer_list[-1],last_index=last_index)}"
                 )
