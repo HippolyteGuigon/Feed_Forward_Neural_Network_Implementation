@@ -122,7 +122,7 @@ class neural_network(optimizer):
 
         self.layer_list = layer_list
         super().get_new_layer_list(layer_list)
-        
+
         for epoch in range(self.epochs):
             last_index = 0
             while last_index < self.input_data.size()[1]:
@@ -244,3 +244,6 @@ class neural_network(optimizer):
 
         if metric == "accuracy":
             return accuracy(y_true, y_pred)
+        
+    def predict(self, x: torch.tensor)->torch.tensor:
+        pass
