@@ -131,7 +131,7 @@ def launch_mnist_pepeline(
     predictions=torch.stack([network.predict(torch.flatten(x)) for x in data_test[0][0]])
 
     accuracy=(torch.sum(data_test[-1][-1]==predictions)/predictions.size()[0]).item()
-    logging.info("The accuracy of the model on the overall test set is: {accuracy:.2f}")
+    logging.info(f"The accuracy of the model on the overall test set is: {accuracy:.2f}")
 
 if __name__ == "__main__":
     launch_mnist_pepeline()

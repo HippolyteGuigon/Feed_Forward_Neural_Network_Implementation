@@ -142,7 +142,7 @@ class neural_network(optimizer):
                 self.layer_list=super().step()
                 
                 logging.info(
-                    f"Epoch: {epoch+1} Loss: {loss.item():.2f}, Accuracy: {self.get_metric(self.layer_list[-1],last_index=last_index)}"
+                    f"Epoch: {epoch+1} Loss: {loss.item():.2f}, Accuracy: {self.get_metric(self.layer_list[-1],last_index=last_index):.3f}"
                 )
                 last_index += self.batch_size
 
