@@ -38,7 +38,7 @@ class layer:
         hidden_size: int,
         first_layer: bool = False,
         last_layer: bool = False,
-        activation: str = "sigmoid",
+        activation: str = "ReLU",
         *args,
         **kwargs
     ) -> None:

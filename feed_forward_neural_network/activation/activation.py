@@ -11,7 +11,7 @@ def safe_softmax(input):
     softmax_output = softmax_output / softmax_output.sum(dim=1, keepdim=True)
     return softmax_output
     
-def elu(x: torch.tensor, alpha: float) -> float:
+def elu(x: torch.tensor, alpha: float=1.0) -> float:
     """
     The goal of this function is
     to get the activation value
