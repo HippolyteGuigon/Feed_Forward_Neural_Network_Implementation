@@ -1,17 +1,23 @@
 import numpy as np
 import torch
 
+
 def safe_softmax(input):
     max_vals, _ = input.max(dim=1, keepdim=True)
     shifted_input = input - max_vals
     exp_shifted_input = torch.exp(shifted_input)
     softmax_output = exp_shifted_input / exp_shifted_input.sum(dim=1, keepdim=True)
-    softmax_output = torch.where(torch.isnan(softmax_output), torch.zeros_like(softmax_output), softmax_output)
-    softmax_output = torch.where(torch.isinf(softmax_output), torch.zeros_like(softmax_output), softmax_output)
+    softmax_output = torch.where(
+        torch.isnan(softmax_output), torch.zeros_like(softmax_output), softmax_output
+    )
+    softmax_output = torch.where(
+        torch.isinf(softmax_output), torch.zeros_like(softmax_output), softmax_output
+    )
     softmax_output = softmax_output / softmax_output.sum(dim=1, keepdim=True)
     return softmax_output
-    
-def elu(x: torch.tensor, alpha: float=1.0) -> float:
+
+
+def elu(x: torch.tensor, alpha: float = 1.0) -> float:
     """
     The goal of this function is
     to get the activation value
