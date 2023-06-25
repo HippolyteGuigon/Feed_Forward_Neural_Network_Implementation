@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 
 from feed_forward_neural_network.activation.activation import (
-    ReLUFunction,
     sigmoid,
     ReLU,
     elu,

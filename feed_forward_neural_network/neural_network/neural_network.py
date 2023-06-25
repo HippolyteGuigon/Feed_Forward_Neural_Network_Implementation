@@ -122,7 +122,7 @@ class neural_network(optimizer):
 
         self.layer_list = layer_list
         super().get_new_layer_list(layer_list)
-        
+
         for epoch in range(self.epochs):
             last_index = 0
             while last_index < self.input_data.size()[1]:
@@ -146,7 +146,7 @@ class neural_network(optimizer):
                 )
                 last_index += self.batch_size
 
-    def output(self, layer) -> torch.tensor:
+    def output(self, layer, final_predict:bool=False) -> torch.tensor:
         """
         The goal of this function
         is to get the prediction
@@ -156,6 +156,9 @@ class neural_network(optimizer):
         Arguments:
             -layer: The last layer of
             the neuron network
+            -final_predict: bool: Whether
+            or not this prediction is made
+            after the network has been fitted
         Returns:
             -output_value: torch.tensor:
             The predicion of the network
@@ -166,9 +169,13 @@ class neural_network(optimizer):
         ), "Output can only be computed\
             on the last layer of the network !"
         layer.get_all_outputs()
-        # Ça déconne au niveau du ReLU !
-        final_scores = F.softmax(layer.all_outputs.T, dim=1)
-        final_results = torch.tensor([torch.argmax(x) for x in final_scores])
+
+        if final_predict:
+            final_scores = F.softmax(layer.all_outputs.T)
+            final_results = torch.argmax(final_scores)
+        else:
+            final_scores = F.softmax(layer.all_outputs.T, dim=1)
+            final_results = torch.tensor([torch.argmax(x) for x in final_scores])
 
         return final_scores, final_results
 
@@ -244,3 +251,39 @@ class neural_network(optimizer):
 
         if metric == "accuracy":
             return accuracy(y_true, y_pred)
+        
+    def predict(self, x: torch.tensor)->torch.tensor:
+        """
+        The goal of this function is 
+        to predict the outcome of a single
+        input tensor 
+        
+        Arguments:
+            -x: torch.tensor: The data to be 
+            predicted
+        Returns:
+            -prediction: torch.tensor: The 
+            computed prediction
+        """
+
+        assert self.layer_list[0].hidden_size==torch.flatten(x).size()[0],\
+        f"The input size of the network is {self.layer_list[0].hidden_size} \
+        whereas the input size of the input data is {torch.flatten(x).size()[0]}"
+
+        self.input_data=x
+
+        for layer_index in range(0, len(self.layer_list) - 1):
+                    if self.layer_list[layer_index].is_first_layer:
+                        layer_1_output = self.input_data
+                        for neuron in self.layer_list[layer_index+1].layer_neurons:
+                            neuron.compute_output_value(layer_1_output)
+                    else:
+                        self.layer_list[layer_index].get_all_outputs()
+                        for neuron in self.layer_list[layer_index+1].layer_neurons:
+                            neuron.compute_output_value(self.layer_list[layer_index].all_outputs)
+                        self.layer_list[layer_index+1].get_all_outputs()
+
+        self.layer_list[-1].get_all_outputs()
+        final_scores, final_results = self.output(self.layer_list[-1],final_predict=True)
+
+        return final_results

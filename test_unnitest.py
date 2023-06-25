@@ -95,7 +95,7 @@ class Test(unittest.TestCase):
 
         self.assertGreaterEqual(loss, 0)
 
-    def test_full_fit_function(self):
+    def test_full_fit_function(self)->None:
         batch_size = 64
         train_loader = torch.utils.data.DataLoader(
             torchvision.datasets.MNIST(
@@ -127,6 +127,57 @@ class Test(unittest.TestCase):
 
         network.fit(layer_list=[layer_1, layer_2, layer_3, layer_4])
 
+    def test_predict(self)->None:
+        """
+        The goal of this function is
+        to verify that the neural network
+        is able to deliver an accurate 
+        prediction on the MNIST dataset
+        
+        Arguments:
+            -None
+            
+        Returns:
+            -None
+        """
+
+        batch_size = 300
+        train_loader = torch.utils.data.DataLoader(
+            torchvision.datasets.MNIST(
+                "data/",
+                train=True,
+                download=True,
+                transform=torchvision.transforms.Compose(
+                    [torchvision.transforms.ToTensor()]
+                ),
+            ),
+            batch_size=60000,
+            shuffle=True,
+        )
+
+        data_iterator = iter(train_loader)
+        batch = next(data_iterator)
+
+        targets = batch[-1]
+        data = torch.stack([torch.flatten(x) for x in batch[0].squeeze()]).T
+        targets = torch.tensor([get_label(x) for x in targets])
+        network = neural_network(
+            input_data=data, epochs=2, targets=targets, batch_size=batch_size
+        )
+
+        layer_1 = layer(batch_size, 784, first_layer=True)
+        layer_2 = layer(784, 16, first_layer=False)
+        layer_3 = layer(16, 16, first_layer=False)
+        layer_4 = layer(16, 10, last_layer=True)
+
+        network.fit(layer_list=[layer_1, layer_2, layer_3, layer_4])
+
+        possible_pred=np.arange(10)
+
+        to_predict= data[:,np.random.randint(60000)]
+        prediction=network.predict(to_predict)
+
+        self.assertIn(prediction.item(),possible_pred)
 
 if __name__ == "__main__":
     unittest.main()
