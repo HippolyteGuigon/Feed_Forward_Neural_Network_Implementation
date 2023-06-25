@@ -3,11 +3,11 @@ The goal of this repository is the implementation of a Feed-Forward Neural Netwo
 
 ## Build Status
 
-For the moment, the one-path computation is ready for a single-batch compute. The next steps are:  
+For the moment, the full network is ready. The next steps are:  
 
-* To code the backpropagation process in order to optimize the network
 * To compute options that will make it possible for the user avoiding overfitting (L1/L2 regularization, dropout etc...)
-* To have software-engineering friendly actions such as unittesting/ CI-CD
+* To put more user-friendly options such as more activation function
+* To incorporate more optimizer options such as Stochastic Gradient Descent
 
 Throughout its construction, if you see any improvements that could be made in the code, do not hesitate to reach out at 
 Hippolyte.guigon@hec.edu. I will b delighted to get some insights !
@@ -31,3 +31,5 @@ The all project was coded under PEP-8 (https://peps.python.org/pep-0008/) and fl
 Image of a vanilla Feed-Forward Neural Network
 
 ## How to use ? 
+
+To have the network working on a single example (that is the MNIST dataset), you can have it running and evaluated with the following command: ```python main.py```
