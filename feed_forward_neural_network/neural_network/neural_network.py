@@ -2,6 +2,7 @@ import torch
 import logging
 import numpy as np
 import torch.nn.functional as F
+import warnings
 from typing import List
 from feed_forward_neural_network.activation.activation import softmax
 from feed_forward_neural_network.loss.loss import categorical_cross_entropy
@@ -53,6 +54,9 @@ class neural_network(optimizer):
         epochs: int = 10,
         batch_size: int = 64,
         lr: float = 0.1,
+        dropout: bool = False,
+        *args, 
+        **kwargs
     ):
         super().__init__(lr)
         self.input_data = input_data
@@ -60,7 +64,17 @@ class neural_network(optimizer):
         self.epochs = epochs
         self.batch_size = batch_size
         self.lr = lr
+        self.dropout=dropout
 
+        if "dropout_rate" in kwargs.items():
+            self.dropout_rate=dropout_rate
+
+        if self.dropout and "dropout_rate" not in kwargs.items():
+            self.dropout_rate=0.25
+            warnings.warn("As no dropout rate was precised, it was\
+                automatically set to 0.25, if you want to set\
+                it yourself, enter dropout_rate=p in the arguments")
+    
         assert self.lr > 0, "The learning rate must be strictly positive"
 
     def forward(self, layer_1, layer_2, last_index: int = 0) -> None:
@@ -110,6 +124,9 @@ class neural_network(optimizer):
             -None
         """
 
+        if self.dropout:
+            pass
+        
         assert layer_list[
             0
         ].is_first_layer, "The first layer of the list\

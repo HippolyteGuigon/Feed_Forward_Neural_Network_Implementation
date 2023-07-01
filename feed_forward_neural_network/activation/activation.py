@@ -1,26 +1,6 @@
 import numpy as np
 import torch
 
-def softmax(x: torch.tensor)->torch.tensor:
-    """
-    The goal of this function
-    is the implemenation of the 
-    softmax function as a probability
-    computer in the final layer
-    
-    Arguments:
-        -x: torch.tensor: The final
-        layer output
-    Returns:
-        -final_result: torch.tensor:
-        The probablility tensor output
-    """
-    sum_denominator=torch.sum(torch.exp(x))
-    numerator=torch.exp(x)
-    final_result=numerator/sum_denominator
-
-    return final_result
-
 def elu(x: torch.tensor, alpha: float = 1.0) -> float:
     """
     The goal of this function is
