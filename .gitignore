@@ -5,7 +5,6 @@
 .vscode/
 data/*
 *.icloud
-heritage.py
 
 #Except these files
 
