@@ -9,6 +9,7 @@ from feed_forward_neural_network.loss.loss import categorical_cross_entropy
 from feed_forward_neural_network.metrics.metrics import accuracy
 from feed_forward_neural_network.logs.logs import main
 from feed_forward_neural_network.optimizer.optimizer import gradient_descent
+from feed_forward_neural_network.layer.layer import layer
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -66,8 +67,8 @@ class neural_network(optimizer):
         self.lr = lr
         self.dropout=dropout
 
-        if "dropout_rate" in kwargs.items():
-            self.dropout_rate=dropout_rate
+        if "dropout_rate" in kwargs.keys():
+            self.dropout_rate=kwargs["dropout_rate"]
 
         if self.dropout and "dropout_rate" not in kwargs.items():
             self.dropout_rate=0.25
@@ -109,6 +110,21 @@ class neural_network(optimizer):
                 neuron.compute_output_value(layer_1.all_outputs)
             layer_2.get_all_outputs()
 
+    def dropout_allocation(self, layer)->None:
+        """
+        The goal of this function is
+        to have dropout being respected
+        in all neurons in all layers
+        being part of the learning 
+        process
+        
+        Arguments:
+            -layer: The layer whose neurons
+            will be converted for dropout 
+        Returns:
+            -None
+        """
+        
     def fit(self, layer_list: List) -> None:
         """
         The goal of this function
@@ -126,7 +142,7 @@ class neural_network(optimizer):
 
         if self.dropout:
             pass
-        
+
         assert layer_list[
             0
         ].is_first_layer, "The first layer of the list\

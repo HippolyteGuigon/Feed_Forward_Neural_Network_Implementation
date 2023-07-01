@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import numpy as np
 
 from feed_forward_neural_network.activation.activation import (
     sigmoid,
@@ -72,3 +73,28 @@ class neuron(nn.Module):
         intermediate_output = output_value
         output_value = sigmoid(output_value)
         self.output_value = output_value.squeeze()
+
+    def dropout_param(self, dropout_proba: float)->None:
+        """
+        The goal of this function is, 
+        when dropout is decided, to 
+        decide if a given neuron is
+        part of the process
+        
+        Arguments:
+            -dropout_proba: float: The
+            probability for a given neuron
+            to be part of the dropout proces
+        Returns:
+            -None    
+        """
+
+        if np.random.random()<dropout_proba:
+            self.dropout=True
+        else:
+            self.dropout=False
+
+        if self.dropout:
+            self.dropout_weight=1
+            self.dropout_bias=0
+            
