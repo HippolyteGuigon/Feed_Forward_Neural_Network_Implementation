@@ -145,7 +145,7 @@ class neural_network(optimizer):
 
         if self.dropout:
             for layer in layer_list[1:-1]:
-                self.dropout_allocation(layer)
+                self.dropout_allocation(layer, self.dropout_rate)
 
         assert layer_list[
             0
