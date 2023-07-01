@@ -67,16 +67,9 @@ class neuron(nn.Module):
         Returns:
             -None
         """
-        if hasattr(self, "dropout"):
-            if not self.dropout:
-                output_value = self.weight.T @ input
-                output_value += self.bias
-            else:
-                output_value  = self.dropout_weight.T @ input
-                output_value += self.dropout_bias
-        else:
-            output_value = self.weight.T @ input
-            output_value += self.bias
+
+        output_value = self.weight.T @ input
+        output_value += self.bias
             
         intermediate_output = output_value
         output_value = sigmoid(output_value)

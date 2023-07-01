@@ -92,6 +92,14 @@ class layer:
                              compute them first before calling this function"
             )
         self.all_outputs=[]
-        self.all_outputs = torch.stack(
-            [neuron.output_value for neuron in self.layer_neurons]
-        )
+
+        if not np.all(
+            [hasattr(neuron, "dropout") for neuron in self.layer_neurons]
+        ):
+            self.all_outputs = torch.stack(
+                [neuron.output_value for neuron in self.layer_neurons] 
+            )
+        else:
+            self.all_outputs = torch.stack(
+                [neuron.output_value for neuron in self.layer_neurons if neuron.dropout] 
+            )
