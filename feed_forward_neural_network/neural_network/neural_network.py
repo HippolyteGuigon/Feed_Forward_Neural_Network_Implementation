@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import torch.nn.functional as F
 from typing import List
-from feed_forward_neural_network.activation.activation import softmax, safe_softmax
+from feed_forward_neural_network.activation.activation import softmax
 from feed_forward_neural_network.loss.loss import categorical_cross_entropy
 from feed_forward_neural_network.metrics.metrics import accuracy
 from feed_forward_neural_network.logs.logs import main
@@ -171,7 +171,7 @@ class neural_network(optimizer):
         layer.get_all_outputs()
 
         if final_predict:
-            final_scores = F.softmax(layer.all_outputs.T)
+            final_scores = softmax(layer.all_outputs.T)
             final_results = torch.argmax(final_scores)
         else:
             final_scores = F.softmax(layer.all_outputs.T, dim=1)

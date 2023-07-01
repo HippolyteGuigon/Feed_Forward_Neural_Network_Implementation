@@ -1,21 +1,25 @@
 import numpy as np
 import torch
 
+def softmax(x: torch.tensor)->torch.tensor:
+    """
+    The goal of this function
+    is the implemenation of the 
+    softmax function as a probability
+    computer in the final layer
+    
+    Arguments:
+        -x: torch.tensor: The final
+        layer output
+    Returns:
+        -final_result: torch.tensor:
+        The probablility tensor output
+    """
+    sum_denominator=torch.sum(torch.exp(x))
+    numerator=torch.exp(x)
+    final_result=numerator/sum_denominator
 
-def safe_softmax(input):
-    max_vals, _ = input.max(dim=1, keepdim=True)
-    shifted_input = input - max_vals
-    exp_shifted_input = torch.exp(shifted_input)
-    softmax_output = exp_shifted_input / exp_shifted_input.sum(dim=1, keepdim=True)
-    softmax_output = torch.where(
-        torch.isnan(softmax_output), torch.zeros_like(softmax_output), softmax_output
-    )
-    softmax_output = torch.where(
-        torch.isinf(softmax_output), torch.zeros_like(softmax_output), softmax_output
-    )
-    softmax_output = softmax_output / softmax_output.sum(dim=1, keepdim=True)
-    return softmax_output
-
+    return final_result
 
 def elu(x: torch.tensor, alpha: float = 1.0) -> float:
     """
