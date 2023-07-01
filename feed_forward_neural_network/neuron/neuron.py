@@ -95,5 +95,5 @@ class neuron(nn.Module):
             self.dropout=False
 
         if self.dropout:
-            self.dropout_weight=1
-            self.dropout_bias=0
+            self.dropout_weight=torch.ones(size=self.weight.size())
+            self.dropout_bias=torch.zeros(size=self.bias.size())
