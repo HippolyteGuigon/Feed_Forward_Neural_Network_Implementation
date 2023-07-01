@@ -126,7 +126,7 @@ class neural_network(optimizer):
         """
 
         for neuron in layer.layer_neurons:
-            neuron.dropout_param()
+            neuron.dropout_param(self.dropout_rate)
 
     def fit(self, layer_list: List) -> None:
         """
