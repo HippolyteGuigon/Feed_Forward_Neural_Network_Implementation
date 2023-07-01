@@ -124,7 +124,10 @@ class neural_network(optimizer):
         Returns:
             -None
         """
-        
+
+        for neuron in layer.layer_neurons:
+            neuron.dropout_param()
+
     def fit(self, layer_list: List) -> None:
         """
         The goal of this function
@@ -141,7 +144,8 @@ class neural_network(optimizer):
         """
 
         if self.dropout:
-            pass
+            for layer in layer_list[1:-1]:
+                self.dropout_allocation(layer)
 
         assert layer_list[
             0

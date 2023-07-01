@@ -97,4 +97,3 @@ class neuron(nn.Module):
         if self.dropout:
             self.dropout_weight=1
             self.dropout_bias=0
-            
