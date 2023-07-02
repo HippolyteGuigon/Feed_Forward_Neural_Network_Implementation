@@ -101,5 +101,5 @@ class layer:
             )
         else:
             self.all_outputs = torch.stack(
-                [neuron.output_value for neuron in self.layer_neurons if neuron.dropout] 
+                [neuron.output_value for neuron in self.layer_neurons if not neuron.dropout] 
             )

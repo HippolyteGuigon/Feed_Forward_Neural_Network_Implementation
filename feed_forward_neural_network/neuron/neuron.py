@@ -68,9 +68,13 @@ class neuron(nn.Module):
             -None
         """
 
+        print("weight_size",self.weight.size())
+        print("bias_size",self.bias.size())
+        print("input", input.size())
+        print("weight", self.weight)
         output_value = self.weight.T @ input
         output_value += self.bias
-            
+        
         intermediate_output = output_value
         output_value = sigmoid(output_value)
         self.output_value = output_value.squeeze()

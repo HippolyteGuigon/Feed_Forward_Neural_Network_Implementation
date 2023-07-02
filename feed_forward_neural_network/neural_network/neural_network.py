@@ -70,12 +70,12 @@ class neural_network(optimizer):
         if "dropout_rate" in kwargs.keys():
             self.dropout_rate=kwargs["dropout_rate"]
 
-        if self.dropout and "dropout_rate" not in kwargs.items():
+        if self.dropout and "dropout_rate" not in kwargs.keys():
             self.dropout_rate=0.25
             warnings.warn("As no dropout rate was precised, it was\
                 automatically set to 0.25, if you want to set\
                 it yourself, enter dropout_rate=p in the arguments")
-    
+
         assert self.lr > 0, "The learning rate must be strictly positive"
 
     def forward(self, layer_1, layer_2, last_index: int = 0) -> None:
@@ -143,9 +143,7 @@ class neural_network(optimizer):
             -None
         """
 
-        if self.dropout:
-            for layer in layer_list[1:-1]:
-                self.dropout_allocation(layer)
+        
 
         assert layer_list[
             0
@@ -163,7 +161,13 @@ class neural_network(optimizer):
         for epoch in range(self.epochs):
             last_index = 0
             while last_index < self.input_data.size()[1]:
+
+                if self.dropout:
+                    for layer in layer_list[0:-1]:
+                        self.dropout_allocation(layer)
+
                 for layer_index in range(0, len(self.layer_list) - 1):
+                    print(layer_index)
                     self.forward(
                         self.layer_list[layer_index],
                         self.layer_list[layer_index + 1],
@@ -324,3 +328,19 @@ class neural_network(optimizer):
         final_scores, final_results = self.output(self.layer_list[-1],final_predict=True)
 
         return final_results
+
+    def predict_proba(self, x:torch.tensor)->torch.tensor:
+        """
+        The goal of this function 
+        is to predict with a probability
+        the output for a given input
+        
+        Arguments:
+            -x: torch.tensor: The tensor 
+            to be predicted
+        Returns:
+            -proba_vector: torch.tensor: The
+            tensor with proba for each class
+        """
+
+        pass
