@@ -106,6 +106,8 @@ class neural_network(optimizer):
                 neuron.compute_output_value(layer_1_output)
         else:
             layer_1.get_all_outputs()
+            if self.dropout:
+                print("DROPOUT INDEX !", layer_1.dropout_index)
             for neuron in layer_2.layer_neurons:
                 neuron.compute_output_value(layer_1.all_outputs)
             layer_2.get_all_outputs()
@@ -163,11 +165,10 @@ class neural_network(optimizer):
             while last_index < self.input_data.size()[1]:
 
                 if self.dropout:
-                    for layer in layer_list[0:-1]:
+                    for layer in layer_list[:-1]:
                         self.dropout_allocation(layer)
 
                 for layer_index in range(0, len(self.layer_list) - 1):
-                    print(layer_index)
                     self.forward(
                         self.layer_list[layer_index],
                         self.layer_list[layer_index + 1],

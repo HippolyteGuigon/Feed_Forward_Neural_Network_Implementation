@@ -93,13 +93,19 @@ class layer:
             )
         self.all_outputs=[]
 
-        if not np.all(
+        if not np.any(
             [hasattr(neuron, "dropout") for neuron in self.layer_neurons]
         ):
             self.all_outputs = torch.stack(
                 [neuron.output_value for neuron in self.layer_neurons] 
             )
         else:
+            self.dropout_index=[]
+            for i, neuron in enumerate(self.layer_neurons):
+                if neuron.dropout:
+                    self.dropout_index.append(i)
+            
             self.all_outputs = torch.stack(
                 [neuron.output_value for neuron in self.layer_neurons if not neuron.dropout] 
             )
+            

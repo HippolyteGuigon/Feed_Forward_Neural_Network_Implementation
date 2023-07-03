@@ -36,6 +36,7 @@ class neuron(nn.Module):
         super(neuron, self).__init__()
         self.bias = bias
         self.weight = weight
+        self.dropout_weight = weight
 
         activation_dict = {
             "ReLU": ReLU,
@@ -68,10 +69,9 @@ class neuron(nn.Module):
             -None
         """
 
-        print("weight_size",self.weight.size())
-        print("bias_size",self.bias.size())
-        print("input", input.size())
-        print("weight", self.weight)
+        #print("weight_size",self.weight.size())
+        #print("bias_size",self.bias.size())
+        #print("input", input.size())
         output_value = self.weight.T @ input
         output_value += self.bias
         
