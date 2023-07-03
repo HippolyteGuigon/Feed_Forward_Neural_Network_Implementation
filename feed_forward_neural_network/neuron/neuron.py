@@ -55,7 +55,7 @@ class neuron(nn.Module):
 
         self.activation = activation_dict[activation]
 
-    def compute_output_value(self, input: torch.tensor) -> None:
+    def compute_output_value(self, input: torch.tensor, dropout: bool=False,*args, **kwargs) -> None:
         """
         The goal of this function is
         to compute the output value
@@ -65,6 +65,10 @@ class neuron(nn.Module):
         Arguments:
             -input: torch.tensor: The
             input values of the neuron
+            -dropout: bool: Whether or 
+            not the dropout should be taken
+            into account in computing the
+            output value
         Returns:
             -None
         """
@@ -72,9 +76,15 @@ class neuron(nn.Module):
         #print("weight_size",self.weight.size())
         #print("bias_size",self.bias.size())
         #print("input", input.size())
-        output_value = self.weight.T @ input
-        output_value += self.bias
         
+        if not dropout:
+            output_value = self.weight.T @ input
+            output_value += self.bias
+        else:
+            dropout_index=kwargs["dropout_index"]
+            self.dropout_weight=self.weight[[i for i in range(self.weight.size()[0]) if i not  in dropout_index]]
+            output_value = self.dropout_weight.T @ input
+            output_value += self.bias
         intermediate_output = output_value
         output_value = sigmoid(output_value)
         self.output_value = output_value.squeeze()

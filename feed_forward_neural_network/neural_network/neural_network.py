@@ -108,8 +108,11 @@ class neural_network(optimizer):
             layer_1.get_all_outputs()
             if self.dropout:
                 print("DROPOUT INDEX !", layer_1.dropout_index)
-            for neuron in layer_2.layer_neurons:
-                neuron.compute_output_value(layer_1.all_outputs)
+                for neuron in layer_2.layer_neurons:
+                    neuron.compute_output_value(layer_1.all_outputs, dropout=True,dropout_index=layer_1.dropout_index)
+            else:
+                for neuron in layer_2.layer_neurons:
+                    neuron.compute_output_value(layer_1.all_outputs)
             layer_2.get_all_outputs()
 
     def dropout_allocation(self, layer)->None:
