@@ -53,11 +53,15 @@ class gradient_descent:
             for layer in self.layer_list[1:]:
                     if self.dropout:
                         for neuron in layer.layer_neurons:
+                            print("VICTOIRE",neuron.dropout)
                             neuron.dropout_weight -= self.lr * neuron.dropout_weight.grad
+                            if neuron.dropout:
+                                neuron.weight[neuron.dropout_index, :]=neuron.dropout_weight
                             neuron.bias -= self.lr * neuron.bias.grad
                             neuron.dropout_weight.grad.zero_()
+                            neuron.weight.grad.zero_()
                             neuron.bias.grad.zero_()
-                            print("VICTOIRE !!!!!")
+                            
                          
                     else:
                         for neuron in layer.layer_neurons:
