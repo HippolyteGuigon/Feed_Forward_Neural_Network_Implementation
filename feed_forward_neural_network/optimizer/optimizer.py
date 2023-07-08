@@ -17,7 +17,7 @@ class gradient_descent:
     Returns:
         -None
     """
-    def __init__(self, lr: float) -> None:
+    def __init__(self, lr: float, dropout: bool=False) -> None:
         self.lr = lr
         self.layer_list = None
 
@@ -51,11 +51,20 @@ class gradient_descent:
         """
         with torch.no_grad():
             for layer in self.layer_list[1:]:
-                    for neuron in layer.layer_neurons:
-                        neuron.weight -= self.lr * neuron.weight.grad
-                        neuron.bias -= self.lr * neuron.bias.grad
-                        neuron.weight.grad.zero_()
-                        neuron.bias.grad.zero_()
+                    if self.dropout:
+                        for neuron in layer.layer_neurons:
+                            neuron.dropout_weight -= self.lr * neuron.dropout_weight.grad
+                            neuron.bias -= self.lr * neuron.bias.grad
+                            neuron.dropout_weight.grad.zero_()
+                            neuron.bias.grad.zero_()
+                            print("VICTOIRE !!!!!")
+                         
+                    else:
+                        for neuron in layer.layer_neurons:
+                            neuron.weight -= self.lr * neuron.weight.grad
+                            neuron.bias -= self.lr * neuron.bias.grad
+                            neuron.weight.grad.zero_()
+                            neuron.bias.grad.zero_()
 
         return self.layer_list
         

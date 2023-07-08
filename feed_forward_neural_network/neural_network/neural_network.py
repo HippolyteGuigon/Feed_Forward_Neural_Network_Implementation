@@ -59,7 +59,7 @@ class neural_network(optimizer):
         *args, 
         **kwargs
     ):
-        super().__init__(lr)
+        super().__init__(lr, dropout)
         self.input_data = input_data
         self.targets = targets
         self.epochs = epochs
@@ -107,7 +107,6 @@ class neural_network(optimizer):
         else:
             layer_1.get_all_outputs()
             if self.dropout:
-                print("DROPOUT INDEX !", layer_1.dropout_index)
                 for neuron in layer_2.layer_neurons:
                     neuron.compute_output_value(layer_1.all_outputs, dropout=True,dropout_index=layer_1.dropout_index)
             else:
