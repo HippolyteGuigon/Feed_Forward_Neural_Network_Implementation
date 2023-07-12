@@ -78,6 +78,7 @@ class neuron(nn.Module):
             output_value += self.bias
             self.dropout_index=[]
         else:
+            self.dropout_weight = self.weight
             self.dropout_index=kwargs["dropout_index"]
             indexes=[i for i in range(self.dropout_weight.size()[0]) if i not in self.dropout_index]
             self.dropout_weight=torch.tensor(torch.index_select(self.dropout_weight,dim=0, index=torch.tensor(indexes)), requires_grad=True)
