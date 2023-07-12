@@ -129,8 +129,12 @@ class neural_network(optimizer):
             -None
         """
 
-        for neuron in layer.layer_neurons:
-            neuron.dropout_param(self.dropout_rate)
+        if not layer.last_layer:
+            for neuron in layer.layer_neurons:
+                neuron.dropout_param(self.dropout_rate)
+        else:
+            for neuron in layer.layer_neurons:
+                neuron.dropout_param(0)
 
     def fit(self, layer_list: List) -> None:
         """
@@ -167,7 +171,7 @@ class neural_network(optimizer):
             while last_index < self.input_data.size()[1]:
 
                 if self.dropout:
-                    for layer in layer_list[:-1]:
+                    for layer in layer_list:
                         self.dropout_allocation(layer)
 
                 for layer_index in range(0, len(self.layer_list) - 1):
