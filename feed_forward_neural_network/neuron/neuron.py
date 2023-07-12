@@ -36,6 +36,7 @@ class neuron(nn.Module):
         super(neuron, self).__init__()
         self.bias = bias
         self.weight = weight
+        self.dropout_weight = self.weight
 
         activation_dict = {
             "ReLU": ReLU,
@@ -54,7 +55,7 @@ class neuron(nn.Module):
 
         self.activation = activation_dict[activation]
 
-    def compute_output_value(self, input: torch.tensor) -> None:
+    def compute_output_value(self, input: torch.tensor, dropout: bool=False,*args, **kwargs) -> None:
         """
         The goal of this function is
         to compute the output value
@@ -64,17 +65,27 @@ class neuron(nn.Module):
         Arguments:
             -input: torch.tensor: The
             input values of the neuron
+            -dropout: bool: Whether or 
+            not the dropout should be taken
+            into account in computing the
+            output value
         Returns:
             -None
         """
-
-        print("weight_size",self.weight.size())
-        print("bias_size",self.bias.size())
-        print("input", input.size())
-        print("weight", self.weight)
-        output_value = self.weight.T @ input
-        output_value += self.bias
         
+        if not dropout:
+            output_value = self.weight.T @ input
+            output_value += self.bias
+            self.dropout_index=[]
+        else:
+            self.dropout_weight = self.weight
+            self.dropout_index=kwargs["dropout_index"]
+            indexes=[i for i in range(self.dropout_weight.size()[0]) if i not in self.dropout_index]
+            self.dropout_weight=torch.tensor(torch.index_select(self.dropout_weight,dim=0, index=torch.tensor(indexes)), requires_grad=True)
+            self.dropout_weight.retain_grad()
+            output_value = self.dropout_weight.T @ input
+            output_value += self.bias
+           
         intermediate_output = output_value
         output_value = sigmoid(output_value)
         self.output_value = output_value.squeeze()
@@ -99,6 +110,4 @@ class neuron(nn.Module):
         else:
             self.dropout=False
 
-        if self.dropout:
-            self.dropout_weight=torch.ones(size=self.weight.size())
-            self.dropout_bias=torch.zeros(size=self.bias.size())
+       

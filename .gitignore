@@ -5,6 +5,7 @@
 .vscode/
 data/*
 *.icloud
+.DS_Store
 
 #Except these files
 

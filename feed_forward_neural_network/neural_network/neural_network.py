@@ -59,7 +59,7 @@ class neural_network(optimizer):
         *args, 
         **kwargs
     ):
-        super().__init__(lr)
+        super().__init__(lr, dropout)
         self.input_data = input_data
         self.targets = targets
         self.epochs = epochs
@@ -106,8 +106,12 @@ class neural_network(optimizer):
                 neuron.compute_output_value(layer_1_output)
         else:
             layer_1.get_all_outputs()
-            for neuron in layer_2.layer_neurons:
-                neuron.compute_output_value(layer_1.all_outputs)
+            if self.dropout:
+                for neuron in layer_2.layer_neurons:
+                    neuron.compute_output_value(layer_1.all_outputs, dropout=True,dropout_index=layer_1.dropout_index)
+            else:
+                for neuron in layer_2.layer_neurons:
+                    neuron.compute_output_value(layer_1.all_outputs)
             layer_2.get_all_outputs()
 
     def dropout_allocation(self, layer)->None:
@@ -125,8 +129,12 @@ class neural_network(optimizer):
             -None
         """
 
-        for neuron in layer.layer_neurons:
-            neuron.dropout_param(self.dropout_rate)
+        if not layer.last_layer:
+            for neuron in layer.layer_neurons:
+                neuron.dropout_param(self.dropout_rate)
+        else:
+            for neuron in layer.layer_neurons:
+                neuron.dropout_param(0)
 
     def fit(self, layer_list: List) -> None:
         """
@@ -163,11 +171,10 @@ class neural_network(optimizer):
             while last_index < self.input_data.size()[1]:
 
                 if self.dropout:
-                    for layer in layer_list[0:-1]:
+                    for layer in layer_list:
                         self.dropout_allocation(layer)
 
                 for layer_index in range(0, len(self.layer_list) - 1):
-                    print(layer_index)
                     self.forward(
                         self.layer_list[layer_index],
                         self.layer_list[layer_index + 1],
