@@ -56,8 +56,7 @@ class gradient_descent:
                         if not neuron.dropout:
                             neuron.dropout_weight -= self.lr * neuron.dropout_weight.grad 
                             neuron.bias -= self.lr * neuron.bias.grad 
-                            modified_index=[i for i in range(neuron.weight.size()[0]) if i not in neuron.dropout_index]
-                            neuron.weight[modified_index,:]=neuron.dropout_weight.clone()
+                            neuron.weight[[i for i in range(neuron.weight.size()[0]) if i not in neuron.dropout_index],:]=neuron.dropout_weight.clone()
                             neuron.dropout_weight.grad.zero_()
                             neuron.bias.grad.zero_()                
                         
