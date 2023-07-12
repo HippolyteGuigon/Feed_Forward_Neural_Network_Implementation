@@ -181,6 +181,18 @@ class Test(unittest.TestCase):
 
 
     def test_full_fit_dropout_function(self)->None:
+        """
+        The goal of this function 
+        is to check that the dropout 
+        functionnality works and can be
+        used during model training 
+        
+        Arguments:
+            -None
+        Returns:
+            -None
+        """
+        
         batch_size = 64
         train_loader = torch.utils.data.DataLoader(
             torchvision.datasets.MNIST(
