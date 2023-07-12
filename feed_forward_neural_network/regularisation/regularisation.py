@@ -5,3 +5,4 @@ def lasso_regularization(x: torch.tensor, lambda: float)->float:
 
 def ridge_regularization(x: torch.tensor, lambda: float)->float:
     return  lambda*torch.norm(x, p=2)
+

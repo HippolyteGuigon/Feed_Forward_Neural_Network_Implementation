@@ -42,6 +42,10 @@ class neural_network(optimizer):
         -lr: float: The learning rate that
         will be used for the training of the
         network
+        -lambda: float: The coefficient used
+        for L1 regularization
+        -mu: float: The coefficient used for
+        L2 regularization
 
     Returns:
         -None
@@ -56,6 +60,8 @@ class neural_network(optimizer):
         batch_size: int = 64,
         lr: float = 0.1,
         dropout: bool = False,
+        lambda: float = 0,
+        mu: float = 0,
         *args, 
         **kwargs
     ):
