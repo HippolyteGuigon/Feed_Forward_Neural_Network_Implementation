@@ -10,6 +10,7 @@ from feed_forward_neural_network.metrics.metrics import accuracy
 from feed_forward_neural_network.logs.logs import main
 from feed_forward_neural_network.optimizer.optimizer import gradient_descent
 from feed_forward_neural_network.layer.layer import layer
+from feed_forward_neural_network.regularization.regularization import lasso_regularization, ridge_regularization, elastic_net_regularization
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)

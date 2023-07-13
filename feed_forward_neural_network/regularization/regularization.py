@@ -19,7 +19,8 @@ def lasso_regularization(x: torch.tensor, layer_list, lambda_coefficient: float=
         penalization
     """
     
-    penalization=lambda_coefficient*torch.norm(x, p=1)
+    weights_list=torch.stack([neuron.weights for neuron in layer for layer in layer_list if not layer.first_layer])
+    penalization=lambda_coefficient*torch.norm(weights_list, p=1)
     return  penalization
 
 def ridge_regularization(x: torch.tensor, layer_list, mu_coefficient: float=1)->float:
@@ -41,7 +42,8 @@ def ridge_regularization(x: torch.tensor, layer_list, mu_coefficient: float=1)->
         penalization
     """
 
-    penalization=mu_coefficient*torch.norm(x, p=2)
+    weights_list=torch.stack([neuron.weights for neuron in layer for layer in layer_list if not layer.first_layer])
+    penalization=mu_coefficient*torch.norm(weights_list, p=2)
     return  mu_coefficient*torch.norm(x, p=2)
 
 def elastic_net_regularization(x: torch.tensor, layer_list, alpha: float)->float:
@@ -63,5 +65,6 @@ def elastic_net_regularization(x: torch.tensor, layer_list, alpha: float)->float
         penalization
     """
 
-    penalization=alpha*lasso_regularization(x) + (1-alpha)*ridge_regularization(x)
+    weights_list=torch.stack([neuron.weights for neuron in layer for layer in layer_list if not layer.first_layer])
+    penalization=alpha*lasso_regularization(weights_list) + (1-alpha)*ridge_regularization(weights_list)
     return penalization
