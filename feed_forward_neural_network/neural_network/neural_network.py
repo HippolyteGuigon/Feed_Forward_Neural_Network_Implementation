@@ -60,8 +60,6 @@ class neural_network(optimizer):
         batch_size: int = 64,
         lr: float = 0.1,
         dropout: bool = False,
-        lambda: float = 0,
-        mu: float = 0,
         *args, 
         **kwargs
     ):
