@@ -17,6 +17,8 @@ def lasso_regularization(layer_list, lambda_coefficient: float=1)->float:
         penalization
     """ 
     
+    assert lambda_coefficient>=0, "The lambda L1 coefficient must be positive"
+    
     weights_list=torch.stack([weight for layer in layer_list for neuron in layer.layer_neurons for weight in neuron.weight if not layer.is_first_layer])
     penalization=lambda_coefficient*torch.norm(weights_list, p=1)
     return  penalization
@@ -38,11 +40,12 @@ def ridge_regularization(layer_list, mu_coefficient: float=1)->float:
         penalization
     """
 
+    assert mu_coefficient>=0, "The L2 regularization coefficient must be positive"
     weights_list=torch.stack([weight for layer in layer_list for neuron in layer.layer_neurons for weight in neuron.weight if not layer.is_first_layer])
     penalization=mu_coefficient*torch.norm(weights_list, p=2)
     return penalization
 
-def elastic_net_regularization(layer_list, alpha: float)->float:
+def elastic_net_regularization(layer_list, alpha: float=0.5)->float:
     """
     The goal of this function is
     to calculate the Elastic-net
@@ -59,5 +62,6 @@ def elastic_net_regularization(layer_list, alpha: float)->float:
         penalization
     """
 
+    assert alpha>=0 and  alpha<=1,"The alpha coefficient for Elastic-net must be between 0 and 1"
     penalization=alpha*lasso_regularization(layer_list) + (1-alpha)*ridge_regularization(layer_list)
     return penalization

@@ -225,5 +225,18 @@ class Test(unittest.TestCase):
 
         network.fit(layer_list=[layer_1, layer_2, layer_3, layer_4])
 
+    def test_regularization(self)->None:
+        """
+        The goal of this function is to
+        check if the neural network can be
+        trained with L1/L2/Elastic-net regulrization
+        
+        Arguments:
+            -None
+        Returns:
+            -None
+        """
+        pass
+
 if __name__ == "__main__":
     unittest.main()
