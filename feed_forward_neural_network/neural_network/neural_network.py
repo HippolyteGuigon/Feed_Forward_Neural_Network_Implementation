@@ -174,9 +174,6 @@ class neural_network(optimizer):
 
         self.layer_list = layer_list
         super().get_new_layer_list(layer_list)
-        print(lasso_regularization(self.layer_list))
-        print(ridge_regularization(self.layer_list))
-        print(elastic_net_regularization(self.layer_list,alpha=0.5))
 
         for epoch in range(self.epochs):
             last_index = 0
@@ -192,11 +189,15 @@ class neural_network(optimizer):
                         self.layer_list[layer_index + 1],
                         last_index=last_index,
                     )
+                self.lasso=lasso_regularization(self.layer_list,lambda_coefficient=self.lambda_regularization)
+                self.ridge=ridge_regularization(self.layer_list, mu_coefficient=self.mu_regularization)
+                #print(elastic_net_regularization(self.layer_list,alpha=0.5))
 
                 loss = self.loss_compute(
                     self.layer_list[-1],
                     self.targets[last_index : last_index + self.batch_size],
-                )
+                )+self.ridge+self.lasso
+
                 loss.backward(retain_graph=True)
 
                 self.layer_list=super().step()
