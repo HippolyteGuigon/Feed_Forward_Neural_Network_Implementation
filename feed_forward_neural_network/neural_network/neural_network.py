@@ -170,7 +170,9 @@ class neural_network(optimizer):
 
         self.layer_list = layer_list
         super().get_new_layer_list(layer_list)
-
+        print(lasso_regularization(self.layer_list))
+        print(ridge_regularization(self.layer_list))
+        print(elastic_net_regularization(self.layer_list,alpha=0.5))
         for epoch in range(self.epochs):
             last_index = 0
             while last_index < self.input_data.size()[1]:

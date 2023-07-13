@@ -1,6 +1,6 @@
 import torch
 
-def lasso_regularization(x: torch.tensor, layer_list, lambda_coefficient: float=1)->float:
+def lasso_regularization(layer_list, lambda_coefficient: float=1)->float:
     """
     The goal of this function is
     to calculate the L1 Lasso penalization
@@ -8,8 +8,6 @@ def lasso_regularization(x: torch.tensor, layer_list, lambda_coefficient: float=
     during the neural network training
     
     Arguments:
-        -x: torch.tensor: The weight tensor
-        of the neural network
         -layer_list: Class: The layer_list
         from which the weights will be retrieved
         -lambda_coefficient: float: The L1
@@ -17,13 +15,13 @@ def lasso_regularization(x: torch.tensor, layer_list, lambda_coefficient: float=
     Returns:
         -penalization: float: The computed
         penalization
-    """
+    """ 
     
-    weights_list=torch.stack([neuron.weights for neuron in layer for layer in layer_list if not layer.first_layer])
+    weights_list=torch.stack([weight for layer in layer_list for neuron in layer.layer_neurons for weight in neuron.weight if not layer.is_first_layer])
     penalization=lambda_coefficient*torch.norm(weights_list, p=1)
     return  penalization
 
-def ridge_regularization(x: torch.tensor, layer_list, mu_coefficient: float=1)->float:
+def ridge_regularization(layer_list, mu_coefficient: float=1)->float:
     """
     The goal of this function is
     to calculate the L2 Ridge penalization
@@ -31,8 +29,6 @@ def ridge_regularization(x: torch.tensor, layer_list, mu_coefficient: float=1)->
     during the neural network training
     
     Arguments:
-        -x: torch.tensor: The weight tensor
-        of the neural network
         -layer_list: Class: The layer_list
         from which the weights will be retrieved
         -mu_coefficient: float: The L2
@@ -42,11 +38,11 @@ def ridge_regularization(x: torch.tensor, layer_list, mu_coefficient: float=1)->
         penalization
     """
 
-    weights_list=torch.stack([neuron.weights for neuron in layer for layer in layer_list if not layer.first_layer])
+    weights_list=torch.stack([weight for layer in layer_list for neuron in layer.layer_neurons for weight in neuron.weight if not layer.is_first_layer])
     penalization=mu_coefficient*torch.norm(weights_list, p=2)
-    return  mu_coefficient*torch.norm(x, p=2)
+    return penalization
 
-def elastic_net_regularization(x: torch.tensor, layer_list, alpha: float)->float:
+def elastic_net_regularization(layer_list, alpha: float)->float:
     """
     The goal of this function is
     to calculate the Elastic-net
@@ -54,8 +50,6 @@ def elastic_net_regularization(x: torch.tensor, layer_list, alpha: float)->float
     during the neural network training
     
     Arguments:
-        -x: torch.tensor: The weight tensor
-        of the neural network
         -layer_list: Class: The layer_list
         from which the weights will be retrieved
         -alpha: float: The elastic-net
@@ -65,6 +59,6 @@ def elastic_net_regularization(x: torch.tensor, layer_list, alpha: float)->float
         penalization
     """
 
-    weights_list=torch.stack([neuron.weights for neuron in layer for layer in layer_list if not layer.first_layer])
+    weights_list=torch.stack([weight for layer in layer_list for neuron in layer.layer_neurons for weight in neuron.weight if not layer.is_first_layer])
     penalization=alpha*lasso_regularization(weights_list) + (1-alpha)*ridge_regularization(weights_list)
     return penalization
