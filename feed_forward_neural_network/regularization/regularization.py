@@ -59,6 +59,5 @@ def elastic_net_regularization(layer_list, alpha: float)->float:
         penalization
     """
 
-    weights_list=torch.stack([weight for layer in layer_list for neuron in layer.layer_neurons for weight in neuron.weight if not layer.is_first_layer])
-    penalization=alpha*lasso_regularization(weights_list) + (1-alpha)*ridge_regularization(weights_list)
+    penalization=alpha*lasso_regularization(layer_list) + (1-alpha)*ridge_regularization(layer_list)
     return penalization

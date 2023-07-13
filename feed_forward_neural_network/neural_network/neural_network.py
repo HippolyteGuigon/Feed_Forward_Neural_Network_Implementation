@@ -61,6 +61,8 @@ class neural_network(optimizer):
         batch_size: int = 64,
         lr: float = 0.1,
         dropout: bool = False,
+        lambda_regularization: float=1,
+        mu_regularization: float=1,
         *args, 
         **kwargs
     ):
@@ -71,6 +73,8 @@ class neural_network(optimizer):
         self.batch_size = batch_size
         self.lr = lr
         self.dropout=dropout
+        self.lambda_regularization=lambda_regularization
+        self.mu_regularization=mu_regularization
 
         if "dropout_rate" in kwargs.keys():
             self.dropout_rate=kwargs["dropout_rate"]
@@ -173,6 +177,7 @@ class neural_network(optimizer):
         print(lasso_regularization(self.layer_list))
         print(ridge_regularization(self.layer_list))
         print(elastic_net_regularization(self.layer_list,alpha=0.5))
+
         for epoch in range(self.epochs):
             last_index = 0
             while last_index < self.input_data.size()[1]:
