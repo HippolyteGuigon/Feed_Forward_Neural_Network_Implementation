@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import warnings
 from typing import List
 from feed_forward_neural_network.activation.activation import softmax
-from feed_forward_neural_network.loss.loss import categorical_cross_entropy
+from feed_forward_neural_network.loss.loss import categorical_cross_entropy, rmse
 from feed_forward_neural_network.metrics.metrics import accuracy
 from feed_forward_neural_network.logs.logs import main
 from feed_forward_neural_network.optimizer.optimizer import gradient_descent
@@ -60,6 +60,7 @@ class neural_network(optimizer):
         input_data: torch.tensor,
         targets: torch.tensor,
         loss: str = "categorical_cross_entropy",
+        objective: str="classification",
         epochs: int = 10,
         batch_size: int = 64,
         lr: float = 0.1,
@@ -73,6 +74,7 @@ class neural_network(optimizer):
     ):
         super().__init__(lr, dropout)
         self.input_data = input_data
+        self.objective=objective
         self.targets = targets
         self.epochs = epochs
         self.batch_size = batch_size
@@ -92,6 +94,7 @@ class neural_network(optimizer):
                 automatically set to 0.25, if you want to set\
                 it yourself, enter dropout_rate=p in the arguments")
 
+        assert self.objective in ["classification", "regression"], "The objective should be classification or regression"
         assert self.lr > 0, "The learning rate must be strictly positive"
 
     def forward(self, layer_1, layer_2, last_index: int = 0) -> None:
@@ -278,11 +281,18 @@ class neural_network(optimizer):
 
         self.final_scores = final_scores
         loss_values = []
+        
+        if self.objective=="classification":
+            for y_true, y_pred in zip(self.final_scores, target):
+                loss = categorical_cross_entropy(y_pred, y_true)
+                loss_values.append(loss)
+            loss = torch.stack(loss_values).mean()
+        else:
+            for y_true, y_pred in zip(self.final_scores, target):
+                loss = rmse(y_pred, y_true)
+                loss_values.append(loss)
+            loss = torch.stack(loss_values).mean()
 
-        for y_true, y_pred in zip(self.final_scores, target):
-            loss = categorical_cross_entropy(y_pred, y_true)
-            loss_values.append(loss)
-        loss = torch.stack(loss_values).mean()
         return loss
 
     def get_metric(
