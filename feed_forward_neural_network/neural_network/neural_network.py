@@ -20,6 +20,8 @@ main()
 
 optimizer = gradient_descent
 
+device=torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+torch.cuda.set_device(device)
 
 class neural_network(optimizer):
     """
