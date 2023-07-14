@@ -1,6 +1,9 @@
 import numpy as np
 import torch
 
+device=torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+torch.cuda.set_device(device)
+
 def elu(x: torch.tensor, alpha: float = 1.0) -> float:
     """
     The goal of this function is

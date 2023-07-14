@@ -228,7 +228,7 @@ class Test(unittest.TestCase):
         to_predict= data[:,np.random.randint(60000)]
         prediction_proba=network.predict_proba(to_predict)
 
-        self.assertEquals(torch.sum(prediction_proba).item(),1)
+        self.assertAlmostEquals(torch.sum(prediction_proba).item(),1,delta=1e-5)
 
     def test_full_fit_dropout_function(self)->None:
         """
