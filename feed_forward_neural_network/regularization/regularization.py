@@ -57,6 +57,7 @@ def elastic_net_regularization(layer_list, alpha: float=0.5, **kwargs)->float:
         from which the weights will be retrieved
         -alpha: float: The elastic-net
         alpha regularization coefficient
+        -**kwarhs: dict: 
     Returns:
         -penalization: float: The computed
         penalization

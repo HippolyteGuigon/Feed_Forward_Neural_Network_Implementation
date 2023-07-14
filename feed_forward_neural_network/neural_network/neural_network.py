@@ -342,14 +342,14 @@ class neural_network(optimizer):
         whereas the input size of the input data is {torch.flatten(x).size()[0]}"
 
         self.input_data=x
-
+        
         for layer_index in range(0, len(self.layer_list) - 1):
                     if self.layer_list[layer_index].is_first_layer:
                         layer_1_output = self.input_data
                         for neuron in self.layer_list[layer_index+1].layer_neurons:
                             neuron.compute_output_value(layer_1_output)
                     else:
-                        self.layer_list[layer_index].get_all_outputs()
+                        self.layer_list[layer_index].get_all_outputs(prediction=True)
                         for neuron in self.layer_list[layer_index+1].layer_neurons:
                             neuron.compute_output_value(self.layer_list[layer_index].all_outputs)
                         self.layer_list[layer_index+1].get_all_outputs()

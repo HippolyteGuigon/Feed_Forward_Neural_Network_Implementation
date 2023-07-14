@@ -71,7 +71,7 @@ class layer:
                 [neuron.weight for neuron in self.layer_neurons]
             ).flatten()
 
-    def get_all_outputs(self) -> None:
+    def get_all_outputs(self, prediction: bool=False) -> None:
         """
         The goal of this function
         is to get all outputs values
@@ -79,7 +79,9 @@ class layer:
         layers
 
         Arguments:
-            -None
+            -prediction: Whether or not
+            outputs are computed for 
+            prediction
         Returns:
             -None
         """
@@ -95,7 +97,7 @@ class layer:
 
         if not np.any(
             [hasattr(neuron, "dropout") for neuron in self.layer_neurons]
-        ):
+        ) or prediction:
             self.all_outputs = torch.stack(
                 [neuron.output_value for neuron in self.layer_neurons] 
             )
