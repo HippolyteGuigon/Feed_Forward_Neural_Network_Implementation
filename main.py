@@ -33,10 +33,19 @@ parser.add_argument(
                         will be used to train the model",
     default=5,
     type=int,
+    choices=range(1,10e100)
 )
 
 parser.add_argument(
-    "--batch_size", help="The batch size for each", default=200, type=int
+    "--batch_size", help="The batch size for each", default=200, type=int, choices=range(1,10e100)
+)
+
+parser.add_argument(
+    "--dropout", help="Whether or not dropout should be applied", default=False,type=bool, choices=[True,False]
+)
+
+parser.add_argument(
+    "--regularization", help="Whether or not regularization should be applied", default=False,type=bool, choices=[True,False]
 )
 
 args = parser.parse_args()
@@ -115,7 +124,8 @@ def launch_mnist_pepeline(
     targets_train = torch.tensor([get_label(x) for x in targets_train])
 
     network = neural_network(
-            input_data=data_train, epochs=nb_epochs, targets=targets_train, batch_size=batch_size,lr=lr)
+            input_data=data_train, epochs=nb_epochs, targets=targets_train, batch_size=batch_size,lr=lr,
+            dropout=args.dropout,regularization=args.regularization)
     layer_1 = layer(batch_size, 784, first_layer=True)
     layer_2 = layer(784, 16, first_layer=False)
     layer_3 = layer(16, 16, first_layer=False)

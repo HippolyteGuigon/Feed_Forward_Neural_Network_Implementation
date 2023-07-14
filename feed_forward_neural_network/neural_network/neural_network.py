@@ -66,9 +66,9 @@ class neural_network(optimizer):
         lr: float = 0.1,
         dropout: bool = False,
         regularization: bool=False,
-        lambda_regularization: float=0,
-        mu_regularization: float=0,
-        alpha_regularization: float=0,
+        lambda_regularization: float=1e-5,
+        mu_regularization: float=1e-5,
+        alpha_regularization: float=0.5,
         *args, 
         **kwargs
     ):
