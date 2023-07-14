@@ -43,10 +43,14 @@ class neural_network(optimizer):
         -lr: float: The learning rate that
         will be used for the training of the
         network
-        -lambda: float: The coefficient used
+        -regularization: bool: Whether or not
+        regularization should be applied
+        -lambda_regularization: float: The coefficient used
         for L1 regularization
-        -mu: float: The coefficient used for
+        -mu_regularization: float: The coefficient used for
         L2 regularization
+        -alpha_regularization: float: The alpha coefficient
+        used for Elastic-Net regularization
 
     Returns:
         -None
@@ -61,8 +65,10 @@ class neural_network(optimizer):
         batch_size: int = 64,
         lr: float = 0.1,
         dropout: bool = False,
-        lambda_regularization: float=1,
-        mu_regularization: float=1,
+        regularization: bool=False,
+        lambda_regularization: float=0,
+        mu_regularization: float=0,
+        alpha_regularization: float=0,
         *args, 
         **kwargs
     ):
@@ -75,6 +81,8 @@ class neural_network(optimizer):
         self.dropout=dropout
         self.lambda_regularization=lambda_regularization
         self.mu_regularization=mu_regularization
+        self.alpha_regularization=alpha_regularization
+        self.regularization=regularization
 
         if "dropout_rate" in kwargs.keys():
             self.dropout_rate=kwargs["dropout_rate"]
@@ -189,14 +197,16 @@ class neural_network(optimizer):
                         self.layer_list[layer_index + 1],
                         last_index=last_index,
                     )
-                self.lasso=lasso_regularization(self.layer_list,lambda_coefficient=self.lambda_regularization)
-                self.ridge=ridge_regularization(self.layer_list, mu_coefficient=self.mu_regularization)
-                #print(elastic_net_regularization(self.layer_list,alpha=0.5))
+                
+                if self.regularization:
+                    self.regularization=elastic_net_regularization(self.layer_list,alpha=self.alpha_regularization,lambda_coefficient=self.lambda_regularization,mu_coefficient=self.mu_regularization)
+                else:
+                    self.regularization=0
 
                 loss = self.loss_compute(
                     self.layer_list[-1],
                     self.targets[last_index : last_index + self.batch_size],
-                )+self.ridge+self.lasso
+                )+self.regularization
 
                 loss.backward(retain_graph=True)
 
