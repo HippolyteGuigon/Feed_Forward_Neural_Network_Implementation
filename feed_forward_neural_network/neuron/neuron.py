@@ -12,9 +12,6 @@ from feed_forward_neural_network.activation.activation import (
     identity,
 )
 
-device=torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-torch.cuda.set_device(device)
-
 class neuron(nn.Module):
     """
     The goal of this class is
