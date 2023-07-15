@@ -15,8 +15,8 @@ jobs:
       - run:
           name: Run unit tests
           command: |
-            pwd
-            python -m unittest -k "not test_image_build_run" test_unnitest.py
+            python -m unittest -k "not test_image_build_run" ../test_unnitest.py
+
 
 workflows:
   build-and-test:
