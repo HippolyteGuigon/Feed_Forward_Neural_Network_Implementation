@@ -5,6 +5,8 @@ jobs:
     working_directory: ~/circleci-python
     docker:
       - image: "circleci/python:3.8"
+        environment:
+          - DOCKER_HOST: tcp://localhost:2375
     steps:
       - checkout
       - run:
@@ -12,11 +14,20 @@ jobs:
           command: |
             pip install --upgrade pip
             pip install -r requirements.txt
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build and run Docker image
+          command: |
+            docker-compose build
+            docker-compose up -d
       - run:
           name: Run unit tests
           command: |
             python -m unittest test_unnitest.py
-
+      - run:
+          name: Stop and remove Docker containers
+          command: docker-compose down
 
 workflows:
   build-and-test:
