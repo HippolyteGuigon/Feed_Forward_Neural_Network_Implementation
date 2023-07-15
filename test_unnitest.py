@@ -2,6 +2,7 @@ import unittest
 import torch
 import torchvision
 import subprocess
+import logging
 import numpy as np
 from feed_forward_neural_network.neural_network.neural_network import neural_network
 from feed_forward_neural_network.test.test import get_label
@@ -108,7 +109,7 @@ class Test(unittest.TestCase):
                     [torchvision.transforms.ToTensor()]
                 ),
             ),
-            batch_size=10000,
+            batch_size=batch_size,
             shuffle=True,
         )
 
@@ -119,7 +120,7 @@ class Test(unittest.TestCase):
         data = torch.stack([torch.flatten(x) for x in batch[0].squeeze()]).T
         targets = torch.tensor([get_label(x) for x in targets])
         network = neural_network(
-            input_data=data, epochs=2, targets=targets, batch_size=batch_size
+            input_data=data, epochs=1, targets=targets, batch_size=batch_size
         )
 
         layer_1 = layer(batch_size, 784, first_layer=True)
@@ -153,7 +154,7 @@ class Test(unittest.TestCase):
                     [torchvision.transforms.ToTensor()]
                 ),
             ),
-            batch_size=60000,
+            batch_size=batch_size,
             shuffle=True,
         )
 
@@ -164,7 +165,7 @@ class Test(unittest.TestCase):
         data = torch.stack([torch.flatten(x) for x in batch[0].squeeze()]).T
         targets = torch.tensor([get_label(x) for x in targets])
         network = neural_network(
-            input_data=data, epochs=2, targets=targets, batch_size=batch_size
+            input_data=data, epochs=1, targets=targets, batch_size=batch_size
         )
 
         
@@ -207,7 +208,7 @@ class Test(unittest.TestCase):
                     [torchvision.transforms.ToTensor()]
                 ),
             ),
-            batch_size=60000,
+            batch_size=batch_size,
             shuffle=True,
         )
 
@@ -218,7 +219,7 @@ class Test(unittest.TestCase):
         data = torch.stack([torch.flatten(x) for x in batch[0].squeeze()]).T
         targets = torch.tensor([get_label(x) for x in targets])
         network = neural_network(
-            input_data=data, epochs=2, targets=targets, batch_size=batch_size
+            input_data=data, epochs=1, targets=targets, batch_size=batch_size
         )
 
 
@@ -257,7 +258,7 @@ class Test(unittest.TestCase):
                     [torchvision.transforms.ToTensor()]
                 ),
             ),
-            batch_size=10000,
+            batch_size=batch_size,
             shuffle=True,
         )
 
@@ -268,7 +269,7 @@ class Test(unittest.TestCase):
         data = torch.stack([torch.flatten(x) for x in batch[0].squeeze()]).T
         targets = torch.tensor([get_label(x) for x in targets])
         network = neural_network(
-            input_data=data, epochs=2, targets=targets, batch_size=batch_size,
+            input_data=data, epochs=1, targets=targets, batch_size=batch_size,
             dropout=True
         )
 
@@ -303,7 +304,7 @@ class Test(unittest.TestCase):
                     [torchvision.transforms.ToTensor()]
                 ),
             ),
-            batch_size=10000,
+            batch_size=batch_size,
             shuffle=True,
         )
 
@@ -314,7 +315,7 @@ class Test(unittest.TestCase):
         data = torch.stack([torch.flatten(x) for x in batch[0].squeeze()]).T
         targets = torch.tensor([get_label(x) for x in targets])
         network = neural_network(
-            input_data=data, epochs=2, targets=targets, batch_size=batch_size,
+            input_data=data, epochs=1, targets=targets, batch_size=batch_size,
             dropout=True, regularization=True, lambda_regularization=1, mu_regularization=1
         )
 
