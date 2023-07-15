@@ -122,8 +122,6 @@ class Test(unittest.TestCase):
             input_data=data, epochs=2, targets=targets, batch_size=batch_size
         )
 
-        network=network(input_data=data, targets=targets).to(device)
-
         layer_1 = layer(batch_size, 784, first_layer=True)
         layer_2 = layer(784, 16, first_layer=False)
         layer_3 = layer(16, 16, first_layer=False)

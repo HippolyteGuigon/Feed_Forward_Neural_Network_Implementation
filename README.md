@@ -24,6 +24,9 @@ The all project was coded under PEP-8 (https://peps.python.org/pep-0008/) and fl
 
 * This project has its own package that is used. To get it, run the following command: ```python install setup.py```
 
+* Then, to build and run the Docker image, run the following code: 
+```make build_docker_image``` and then ```make run_docker_image```
+
 ## Screenshot
 
 ![alt text](https://github.com/HippolyteGuigon/Feed_Forward_Neural_Network_Implementation/blob/main/ressources/fnn.jpg)
