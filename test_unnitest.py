@@ -120,7 +120,6 @@ class Test(unittest.TestCase):
         network = neural_network(
             input_data=data, epochs=2, targets=targets, batch_size=batch_size
         )
-        network = torch.nn.DataParallel(network)
 
         layer_1 = layer(batch_size, 784, first_layer=True)
         layer_2 = layer(784, 16, first_layer=False)
@@ -167,7 +166,6 @@ class Test(unittest.TestCase):
             input_data=data, epochs=2, targets=targets, batch_size=batch_size
         )
 
-        network = torch.nn.DataParallel(network)
         
         layer_1 = layer(batch_size, 784, first_layer=True)
         layer_2 = layer(784, 16, first_layer=False)
@@ -222,7 +220,6 @@ class Test(unittest.TestCase):
             input_data=data, epochs=2, targets=targets, batch_size=batch_size
         )
 
-        network = torch.nn.DataParallel(network)
 
         layer_1 = layer(batch_size, 784, first_layer=True)
         layer_2 = layer(784, 16, first_layer=False)
@@ -274,7 +271,6 @@ class Test(unittest.TestCase):
             dropout=True
         )
 
-        network = torch.nn.DataParallel(network)
 
         layer_1 = layer(batch_size, 784, first_layer=True)
         layer_2 = layer(784, 16, first_layer=False)
@@ -321,7 +317,6 @@ class Test(unittest.TestCase):
             dropout=True, regularization=True, lambda_regularization=1, mu_regularization=1
         )
 
-        network = torch.nn.DataParallel(network)
 
         layer_1 = layer(batch_size, 784, first_layer=True)
         layer_2 = layer(784, 16, first_layer=False)
