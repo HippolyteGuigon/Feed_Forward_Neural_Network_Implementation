@@ -321,16 +321,17 @@ class Test(unittest.TestCase):
 
         network.fit(layer_list=[layer_1, layer_2, layer_3, layer_4])
     
-    def test_image_build(self):
+    def test_image_build_run(self):
         # Exécuter la commande pour construire l'image Docker
-        result = subprocess.run(['docker', 'build', '-t', 'mon_image:tag', '.'], capture_output=True, text=True)
-
+        result = subprocess.run(['docker', 'build', '-t', 'ffnn:latest', '.'], capture_output=True, text=True)
+        result_run = subprocess.run(['docker', 'run', '-p', '8080:80', 'ffnn_image:latest'], capture_output=True, text=True)
         # Vérifier que la commande s'est terminée sans erreur
         self.assertEqual(result.returncode, 0)
-
+        self.assertEqual(result_run.returncode, 0)
         # Vérifier que la sortie de la commande contient le message attendu
         self.assertIn('Successfully built', result.stdout)
-        
+        self.assertIn(result_run.stdout.strip(), subprocess.run(['docker', 'ps', '-q'], capture_output=True, text=True).stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
