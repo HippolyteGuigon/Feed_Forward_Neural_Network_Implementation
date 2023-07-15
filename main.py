@@ -23,7 +23,7 @@ parser.add_argument(
     help="The learning rate that will\
          be used during the training\
         of the network",
-    default=0.1,
+    default=1e-2,
     type=float,
 )
 
@@ -31,21 +31,20 @@ parser.add_argument(
     "--number_epochs",
     help="The number of epochs that\
                         will be used to train the model",
-    default=5,
+    default=10,
     type=int,
-    choices=range(1,10e100)
 )
 
 parser.add_argument(
-    "--batch_size", help="The batch size for each", default=200, type=int, choices=range(1,10e100)
+    "--batch_size", help="The batch size for each", default=200, type=int
 )
 
 parser.add_argument(
-    "--dropout", help="Whether or not dropout should be applied", default=False,type=bool, choices=[True,False]
+    "--dropout", help="Whether or not dropout should be applied", default=False,type=bool
 )
 
 parser.add_argument(
-    "--regularization", help="Whether or not regularization should be applied", default=False,type=bool, choices=[True,False]
+    "--regularization", help="Whether or not regularization should be applied", default=False,type=bool
 )
 
 args = parser.parse_args()
