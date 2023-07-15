@@ -178,7 +178,7 @@ class Test(unittest.TestCase):
 
         possible_pred=np.arange(10)
 
-        to_predict= data[:,np.random.randint(60000)]
+        to_predict= data[:,np.random.randint(batch_size)]
         prediction=network.predict(to_predict)
 
         self.assertIn(prediction.item(),possible_pred)
@@ -230,7 +230,7 @@ class Test(unittest.TestCase):
 
         network.fit(layer_list=[layer_1, layer_2, layer_3, layer_4])
 
-        to_predict= data[:,np.random.randint(60000)]
+        to_predict= data[:,np.random.randint(batch_size)]
         prediction_proba=network.predict_proba(to_predict)
 
         self.assertAlmostEqual(torch.sum(prediction_proba).item(),1,delta=1e-5)
