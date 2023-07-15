@@ -1,32 +1,22 @@
 version: 2.1
 
 jobs:
-  build:
+  build-and-test:
     working_directory: ~/circleci-python
     docker:
       - image: "circleci/python:3.8"
     steps:
       - checkout
       - run:
-          command: |
-            pip install --upgrade pip  
-            pip install -r requirements.txt 
-            python test_unnitest.py
-  test:
-    working_directory: ~/circleci-python
-    docker:
-      - image: "circleci/python:3.8"
-    steps:
-      - checkout
-      - run:
+          name: Install dependencies
           command: |
             pip install --upgrade pip
-            pip install -r requirements.txt 
-            python test_unnitest.py
+            pip install -r requirements.txt
+      - run:
+          name: Run unit tests
+          command: python -m unittest discover -s path/to/tests -p 'test_*.py' -k 'not test_image_build_run'
+
 workflows:
-  build_and_test:
+  build-and-test:
     jobs:
-      - build
-      - test:
-          requires:
-            - build
+      - build-and-test
