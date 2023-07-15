@@ -232,7 +232,7 @@ class Test(unittest.TestCase):
         to_predict= data[:,np.random.randint(60000)]
         prediction_proba=network.predict_proba(to_predict)
 
-        self.assertAlmostEquals(torch.sum(prediction_proba).item(),1,delta=1e-5)
+        self.assertAlmostEqual(torch.sum(prediction_proba).item(),1,delta=1e-5)
 
     def test_full_fit_dropout_function(self)->None:
         """
@@ -342,10 +342,11 @@ class Test(unittest.TestCase):
         result = subprocess.run(['docker', 'build', '-t', 'ffnn:latest', '.'], capture_output=True, text=True)
         result_run = subprocess.run(['docker', 'run', '-p', '8080:80', 'ffnn_image:latest'], capture_output=True, text=True)
         result_images = subprocess.run(['docker', 'images'], capture_output=True, text=True)
-        print("resuuuuuuuult", result)
+        
         # Vérifier que la commande s'est terminée sans erreur
         self.assertEqual(result.returncode, 0)
         self.assertTrue(("ffnn" in result_images.stdout))
+        logging.error("Iciiiiii",result_run)
         self.assertEqual(result_run.returncode, 0)
         # Vérifier que la sortie de la commande contient le message attendu
         
