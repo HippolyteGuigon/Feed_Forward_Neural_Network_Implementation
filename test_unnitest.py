@@ -347,7 +347,7 @@ class Test(unittest.TestCase):
         # Vérifier que la commande s'est terminée sans erreur
         self.assertEqual(result.returncode, 0)
         self.assertTrue(("ffnn" in result_images.stdout))
-        loging.info("Iciiiiii",result_images)
+        logging.info("Iciiiiii",result_images)
         logging.error("Iciiiiii",result_run)
         self.assertEqual(result_run.returncode, 0)
         # Vérifier que la sortie de la commande contient le message attendu
