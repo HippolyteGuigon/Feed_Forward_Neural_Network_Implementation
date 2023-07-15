@@ -7,6 +7,7 @@ from feed_forward_neural_network.neural_network.neural_network import neural_net
 from feed_forward_neural_network.test.test import get_label
 from feed_forward_neural_network.layer.layer import layer
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class Test(unittest.TestCase):
     """
@@ -120,6 +121,8 @@ class Test(unittest.TestCase):
         network = neural_network(
             input_data=data, epochs=2, targets=targets, batch_size=batch_size
         )
+
+        network=network(input_data=data, targets=targets).to(device)
 
         layer_1 = layer(batch_size, 784, first_layer=True)
         layer_2 = layer(784, 16, first_layer=False)
@@ -325,16 +328,27 @@ class Test(unittest.TestCase):
 
         network.fit(layer_list=[layer_1, layer_2, layer_3, layer_4])
     
-    def test_image_build_run(self):
+    def test_image_build_run(self)->None:
+        """
+        The goal of this function is to test
+        whether the construction and running
+        of the docker image works well
+
+        Arguments:
+            -None
+        Returns:
+            -None
+        """
+
         # Exécuter la commande pour construire l'image Docker
         result = subprocess.run(['docker', 'build', '-t', 'ffnn:latest', '.'], capture_output=True, text=True)
-        #result_run = subprocess.run(['docker', 'run', '-p', '8080:80', 'ffnn_image:latest'], capture_output=True, text=True)
+        result_run = subprocess.run(['docker', 'run', '-p', '8080:80', 'ffnn_image:latest'], capture_output=True, text=True)
         # Vérifier que la commande s'est terminée sans erreur
         self.assertEqual(result.returncode, 0)
-        #self.assertEqual(result_run.returncode, 0)
+        self.assertEqual(result_run.returncode, 0)
         # Vérifier que la sortie de la commande contient le message attendu
         self.assertIn('Successfully built', result.stdout)
-        #self.assertIn(result_run.stdout.strip(), subprocess.run(['docker', 'ps', '-q'], capture_output=True, text=True).stdout)
+        self.assertIn(result_run.stdout.strip(), subprocess.run(['docker', 'ps', '-q'], capture_output=True, text=True).stdout)
 
 
 if __name__ == "__main__":
