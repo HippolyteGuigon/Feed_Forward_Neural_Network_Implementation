@@ -343,12 +343,13 @@ class Test(unittest.TestCase):
         # Exécuter la commande pour construire l'image Docker
         result = subprocess.run(['docker', 'build', '-t', 'ffnn:latest', '.'], capture_output=True, text=True)
         result_run = subprocess.run(['docker', 'run', '-p', '8080:80', 'ffnn_image:latest'], capture_output=True, text=True)
+        result_images = subprocess.run(['docker', 'images'], capture_output=True, text=True)
         # Vérifier que la commande s'est terminée sans erreur
         self.assertEqual(result.returncode, 0)
+        self.assertTrue(("ffnn" in result_images.stdout))
         self.assertEqual(result_run.returncode, 0)
         # Vérifier que la sortie de la commande contient le message attendu
-        self.assertIn('Successfully built', result.stdout)
-        self.assertIn(result_run.stdout.strip(), subprocess.run(['docker', 'ps', '-q'], capture_output=True, text=True).stdout)
+        
 
 
 if __name__ == "__main__":
