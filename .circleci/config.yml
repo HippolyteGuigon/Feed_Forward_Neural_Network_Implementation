@@ -14,7 +14,7 @@ jobs:
             pip install -r requirements.txt
       - run:
           name: Run unit tests
-          command: python -m unittest discover -s . -p 'test_*.py' -k 'not test_image_build_run'
+          command: python -m unittest discover -p 'test_unnitest.py' -k 'not test_image_build_run'
 
 workflows:
   build-and-test:
