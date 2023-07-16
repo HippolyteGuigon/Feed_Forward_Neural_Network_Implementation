@@ -11,7 +11,7 @@ jobs:
           name: Install dependencies
           command: |
             pip install --upgrade pip
-            pip install --no-cache-dir --use-feature=fast-deps -r requirements.txt
+            pip install --no-cache-dir -r requirements.txt
       - setup_remote_docker:
           version: 20.10.7  # Version de Docker à utiliser
       - run:
