@@ -49,19 +49,23 @@ class gradient_descent:
         Returns:
             -None
         """
-        with torch.no_grad():
-            for index, layer in enumerate(self.layer_list[1:]):
-                if self.dropout:
-                    for neuron in layer.layer_neurons:
-                        if not neuron.dropout:
+        
+        for index, layer in enumerate(self.layer_list[1:]):
+            if self.dropout:
+                for neuron in layer.layer_neurons:
+                    if not neuron.dropout:
+                        with torch.no_grad():
                             neuron.dropout_weight -= self.lr * neuron.dropout_weight.grad 
                             neuron.bias -= self.lr * neuron.bias.grad 
                             neuron.weight[[i for i in range(neuron.weight.size()[0]) if i not in neuron.dropout_index],:]=neuron.dropout_weight.clone()
                             neuron.dropout_weight.grad.zero_()
                             neuron.bias.grad.zero_()                
-                        
-                else:
-                    for neuron in layer.layer_neurons:
+                    
+            else:
+                for neuron in layer.layer_neurons:
+                    
+                    with torch.no_grad():
+                        print("index",index,"weight",neuron.weight,"grad",neuron.weight.grad)
                         neuron.weight -= self.lr * neuron.weight.grad
                         neuron.bias -= self.lr * neuron.bias.grad
                         neuron.weight.grad.zero_()
