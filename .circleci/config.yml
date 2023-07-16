@@ -8,25 +8,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Set up Python venv
-          command: |
-            python3 -m venv venv
-            source venv/bin/activate
-      - run:
-          name: Upgrade pip
-          command: |
-            pip install --upgrade pip
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "requirements.txt" }}
-      - run:
           name: Install dependencies
           command: |
-            pip install --no-cache-dir -r requirements.txt
-      - save_cache:
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
-          paths:
-            - venv
+            pip install --upgrade pip
+            pip install --no-cache-dir --use-feature=fast-deps -r requirements.txt
       - setup_remote_docker:
           version: 20.10.7  # Version de Docker à utiliser
       - run:
