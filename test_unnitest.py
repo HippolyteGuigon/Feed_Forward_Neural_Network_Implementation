@@ -3,6 +3,7 @@ import torch
 import torchvision
 import subprocess
 import logging
+import os
 import numpy as np
 from feed_forward_neural_network.neural_network.neural_network import neural_network
 from feed_forward_neural_network.test.test import get_label
