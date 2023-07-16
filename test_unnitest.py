@@ -339,13 +339,16 @@ class Test(unittest.TestCase):
             -None
         """
 
-        result = subprocess.run(['docker', 'build', '-t', 'ffnn:latest', '.'], capture_output=True, text=True)
-        result_run = subprocess.run(['docker', 'run', '-p', '8080:80', 'ffnn:latest'], capture_output=True, text=True)
-        result_images = subprocess.run(['docker', 'images'], capture_output=True, text=True)
-        
-        self.assertEqual(result.returncode, 0)
-        self.assertTrue(("ffnn" in result_images.stdout))
-        self.assertEqual(result_run.returncode, 0)
+        if os.environ.get('CIRCLECI') == 'true':
+            self.skipTest("Skipping Docker test on CircleCI")
+        else:
+            result = subprocess.run(['docker', 'build', '-t', 'ffnn:latest', '.'], capture_output=True, text=True)
+            result_run = subprocess.run(['docker', 'run', '-p', '8080:80', 'ffnn:latest'], capture_output=True, text=True)
+            result_images = subprocess.run(['docker', 'images'], capture_output=True, text=True)
+            
+            self.assertEqual(result.returncode, 0)
+            self.assertTrue(("ffnn" in result_images.stdout))
+            self.assertEqual(result_run.returncode, 0)
         
 
 
