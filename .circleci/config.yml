@@ -5,12 +5,14 @@ jobs:
     working_directory: ~/circleci-python
     docker:
       - image: "circleci/python:3.8"
-        environment:
-          DOCKER_HOST: tcp://localhost:2375
-    services:
-      - docker
+    environment:
+      DOCKER_HOST: tcp://localhost:2375
     steps:
       - checkout
+      - run:
+          name: Install Docker
+          command: |
+            sudo service docker start
       - run:
           command: |
             pip install --upgrade pip  
