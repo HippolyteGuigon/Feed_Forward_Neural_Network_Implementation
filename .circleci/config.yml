@@ -1,33 +1,32 @@
 version: 2.1
 
 jobs:
-  build-and-test:
+  build:
     working_directory: ~/circleci-python
     docker:
       - image: "circleci/python:3.8"
     steps:
       - checkout
       - run:
-          name: Install dependencies
+          command: |
+            pip install --upgrade pip  
+            pip install -r requirements.txt 
+            python test_unnitest.py
+  test:
+    working_directory: ~/circleci-python
+    docker:
+      - image: "circleci/python:3.8"
+    steps:
+      - checkout
+      - run:
           command: |
             pip install --upgrade pip
-            pip install --no-cache-dir -r requirements.txt
-      - setup_remote_docker:
-          version: 20.10.7  # Version de Docker à utiliser
-      - run:
-          name: Build Docker image
-          command: |
-            docker build -t ffnn:latest .
-      - run:
-          name: Run Docker container
-          command: |
-            docker run -p 8080:80 ffnn:latest
-      - run:
-          name: Run unit tests
-          command: |
-            python -m unittest test_unnitest.py
-
+            pip install -r requirements.txt 
+            python test_unnitest.py
 workflows:
-  build-and-test:
+  build_and_test:
     jobs:
-      - build-and-test
+      - build
+      - test:
+          requires:
+            - build
