@@ -22,6 +22,7 @@ jobs:
           command: |
             pip install --upgrade pip
             pip install -r requirements.txt 
+            docker build --verbose -t ffnn:latest .
             python test_unnitest.py
 workflows:
   build_and_test:
