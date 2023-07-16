@@ -37,10 +37,12 @@ def rmse(y_pred: torch.tensor, y_true: torch.tensor) -> torch.tensor:
         made by the model
         -y_true: torch.tensor: The true values
     Returns:
-        -loss: torch.tensor(float): The computed
+        -rmse: torch.tensor(float): The computed
         loss
     """
 
-    loss = torch.sum(torch.square(y_true - y_pred))
-    loss = torch.sqrt(loss)
-    return loss
+    squared_diff = (y_pred - y_true) ** 2
+    mse = squared_diff.mean()
+    rmse = torch.sqrt(mse)
+
+    return rmse

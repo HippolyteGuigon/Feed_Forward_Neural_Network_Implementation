@@ -205,6 +205,7 @@ class neural_network(optimizer):
                 else:
                     self.regularization=0
 
+                self.layer_list[-1].get_all_outputs()
                 loss = self.loss_compute(
                     self.layer_list[-1],
                     self.targets[last_index : last_index + self.batch_size],
@@ -214,9 +215,14 @@ class neural_network(optimizer):
 
                 self.layer_list=super().step()
                 
-                logging.info(
-                    f"Epoch: {epoch+1} Loss: {loss.item():.2f}, Accuracy: {self.get_metric(self.layer_list[-1],last_index=last_index):.3f}"
-                )
+                if self.objective=="classification":
+                    logging.info(
+                        f"Epoch: {epoch+1} Loss: {loss.item():.2f}, Accuracy: {self.get_metric(self.layer_list[-1],last_index=last_index):.3f}"
+                    )
+                else:
+                    logging.info(
+                        f"Epoch: {epoch+1} Loss: {loss.item():.2f}, RMSE: {self.get_metric(self.layer_list[-1],last_index=last_index):.3f}"
+                    )
                 last_index += self.batch_size
 
     def output(self, layer, final_predict:bool=False) -> torch.tensor:
@@ -243,14 +249,18 @@ class neural_network(optimizer):
             on the last layer of the network !"
         layer.get_all_outputs()
 
-        if final_predict:
-            final_scores = softmax(layer.all_outputs.T)
-            final_results = torch.argmax(final_scores)
-        else:
-            final_scores = F.softmax(layer.all_outputs.T, dim=1)
-            final_results = torch.tensor([torch.argmax(x) for x in final_scores])
+        if self.objective=="classification":
+            if final_predict:
+                final_scores = softmax(layer.all_outputs.T)
+                final_results = torch.argmax(final_scores)
+            else:
+                final_scores = F.softmax(layer.all_outputs.T, dim=1)
+                final_results = torch.tensor([torch.argmax(x) for x in final_scores])
 
-        return final_scores, final_results
+            return final_scores, final_results
+        else:
+            final_scores = layer.all_outputs.T
+            return final_scores
 
     def loss_compute(self, layer, target: torch.tensor) -> torch.tensor:
         """
@@ -277,7 +287,10 @@ class neural_network(optimizer):
             on the last layer of the network !"
 
         layer.get_all_outputs()
-        final_scores, final_results = self.output(layer)
+        if self.objective=="classification":
+            final_scores, _ = self.output(layer)
+        else:
+            final_scores = self.output(layer)
 
         self.final_scores = final_scores
         loss_values = []
@@ -289,7 +302,8 @@ class neural_network(optimizer):
             loss = torch.stack(loss_values).mean()
         else:
             for y_true, y_pred in zip(self.final_scores, target):
-                loss = rmse(y_pred, y_true)
+                print("y_true",y_true,"y_pred",y_pred)
+                loss = rmse(y_pred.squeeze(), y_true)
                 loss_values.append(loss)
             loss = torch.stack(loss_values).mean()
 
@@ -321,16 +335,28 @@ class neural_network(optimizer):
         ), "Metric can only be computed\
             on the last layer of the network !"
 
-        if "last_index" in kwargs.keys():
-            y_true = torch.tensor([torch.argmax(x) for x in self.targets])[
-                kwargs["last_index"] : kwargs["last_index"] + self.batch_size
-            ]
-        else:
-            y_true = torch.tensor([torch.argmax(x) for x in self.targets])
-        _, y_pred = self.output(layer)
+        if self.objective=="classification":
+            if "last_index" in kwargs.keys():
+                y_true = torch.tensor([torch.argmax(x) for x in self.targets])[
+                    kwargs["last_index"] : kwargs["last_index"] + self.batch_size
+                ]
+            else:
+                y_true = torch.tensor([torch.argmax(x) for x in self.targets])
+            _, y_pred = self.output(layer)
 
-        if metric == "accuracy":
-            return accuracy(y_true, y_pred)
+            if metric == "accuracy":
+                return accuracy(y_true, y_pred)
+            
+        else:
+            if "last_index" in kwargs.keys():
+                y_true = self.targets[
+                    kwargs["last_index"] : kwargs["last_index"] + self.batch_size
+                ]
+            else:
+                y_true = self.targets
+            y_pred = self.output(layer)
+
+            return rmse(y_true, y_pred)
         
     def predict(self, x: torch.tensor)->torch.tensor:
         """
