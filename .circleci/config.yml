@@ -5,22 +5,28 @@ jobs:
     working_directory: ~/circleci-python
     docker:
       - image: "circleci/python:3.8"
-        environment:
-          THREAD_LIMIT: 50
     steps:
       - checkout
+      - run:
+          name: Set up Python venv
+          command: |
+            python3 -m venv venv
+            source venv/bin/activate
+      - run:
+          name: Upgrade pip
+          command: |
+            pip install --upgrade pip
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "requirements.txt" }}
       - run:
           name: Install dependencies
           command: |
-            pip install --upgrade pip
             pip install --no-cache-dir -r requirements.txt
       - save_cache:
           key: v1-dependencies-{{ checksum "requirements.txt" }}
           paths:
-            - /usr/local/lib/python3.8/site-packages
+            - venv
       - setup_remote_docker:
           version: 20.10.7  # Version de Docker à utiliser
       - run:
@@ -34,8 +40,6 @@ jobs:
       - run:
           name: Run unit tests
           command: |
-            pip install --upgrade pip
-            pip install --no-cache-dir -r requirements.txt
             python -m unittest test_unnitest.py
 
 workflows:
