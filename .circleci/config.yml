@@ -11,7 +11,7 @@ jobs:
           command: |
             pip install --upgrade pip  
             pip install -r requirements.txt 
-            docker build --verbose -t ffnn:latest .
+            docker build --progress=plain -t ffnn:latest .
             python test_unnitest.py
   test:
     working_directory: ~/circleci-python
