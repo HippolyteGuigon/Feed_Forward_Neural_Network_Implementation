@@ -5,6 +5,8 @@ jobs:
     working_directory: ~/circleci-python
     docker:
       - image: "circleci/python:3.8"
+        environment:
+          THREAD_LIMIT: 50
     steps:
       - checkout
       - restore_cache:
@@ -14,7 +16,7 @@ jobs:
           name: Install dependencies
           command: |
             pip install --upgrade pip
-            pip install -r requirements.txt
+            pip install --no-cache-dir -r requirements.txt
       - save_cache:
           key: v1-dependencies-{{ checksum "requirements.txt" }}
           paths:
