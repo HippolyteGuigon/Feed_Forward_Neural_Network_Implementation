@@ -205,14 +205,12 @@ class neural_network(optimizer):
                 else:
                     self.regularization=0
 
-                self.layer_list[-1].get_all_outputs()
                 loss = self.loss_compute(
                     self.layer_list[-1],
                     self.targets[last_index : last_index + self.batch_size],
                 )+self.regularization
-
+                
                 loss.backward(retain_graph=True)
-
                 self.layer_list=super().step()
                 
                 if self.objective=="classification":

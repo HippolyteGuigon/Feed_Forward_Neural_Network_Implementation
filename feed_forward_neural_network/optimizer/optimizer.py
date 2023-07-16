@@ -63,9 +63,11 @@ class gradient_descent:
                     
             else:
                 for neuron in layer.layer_neurons:
-                    
                     with torch.no_grad():
-                        print("index",index,"weight",neuron.weight,"grad",neuron.weight.grad)
+                        mask = torch.isnan(neuron.weight.grad)
+                        neuron.weight.grad[mask]=0
+                        mask = torch.isnan(neuron.bias.grad)
+                        neuron.bias.grad[mask]=0
                         neuron.weight -= self.lr * neuron.weight.grad
                         neuron.bias -= self.lr * neuron.bias.grad
                         neuron.weight.grad.zero_()
