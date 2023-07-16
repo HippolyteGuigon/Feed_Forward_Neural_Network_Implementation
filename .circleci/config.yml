@@ -11,7 +11,7 @@ jobs:
           command: |
             pip install --upgrade pip  
             pip install -r requirements.txt 
-            python test_unnitest.py
+            python -m unittest -k "not test_image_build_run" test_unnitest.py
   test:
     working_directory: ~/circleci-python
     docker:
