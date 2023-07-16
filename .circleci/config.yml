@@ -5,30 +5,18 @@ jobs:
     working_directory: ~/circleci-python
     docker:
       - image: "circleci/python:3.8"
+        environment:
+          DOCKER_HOST: tcp://localhost:2375
+    services:
+      - docker
     steps:
       - checkout
       - run:
           command: |
             pip install --upgrade pip  
             pip install -r requirements.txt 
-            docker build --progress=plain -t ffnn:latest .
             python test_unnitest.py
-  test:
-    working_directory: ~/circleci-python
-    docker:
-      - image: "circleci/python:3.8"
-    steps:
-      - checkout
       - run:
+          name: Build Docker image
           command: |
-            pip install --upgrade pip
-            pip install -r requirements.txt 
-            docker build --verbose -t ffnn:latest .
-            python test_unnitest.py
-workflows:
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
+            docker build -t ffnn:latest .
