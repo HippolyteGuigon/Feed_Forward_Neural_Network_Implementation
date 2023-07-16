@@ -296,16 +296,18 @@ class neural_network(optimizer):
         loss_values = []
         
         if self.objective=="classification":
-            for y_true, y_pred in zip(self.final_scores, target):
-                loss = categorical_cross_entropy(y_pred, y_true)
-                loss_values.append(loss)
-            loss = torch.stack(loss_values).mean()
+            loss=categorical_cross_entropy(self.final_scores, target)
+            #for y_true, y_pred in zip(self.final_scores, target):
+            #    loss = categorical_cross_entropy(y_pred, y_true)
+            #    loss_values.append(loss)
+            #loss = torch.stack(loss_values).mean()
         else:
-            for y_true, y_pred in zip(self.final_scores, target):
-                print("y_true",y_true,"y_pred",y_pred)
-                loss = rmse(y_pred.squeeze(), y_true)
-                loss_values.append(loss)
-            loss = torch.stack(loss_values).mean()
+            loss=rmse(target,self.final_scores)
+            #for y_true, y_pred in zip(target,self.final_scores):
+            #    print("y_true",y_true,"y_pred",y_pred)
+            #    loss = rmse(y_pred.squeeze(), y_true)
+            #    loss_values.append(loss)
+            #loss = torch.stack(loss_values).mean()
 
         return loss
 
